@@ -1,0 +1,258 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+
+:root {
+  --brand-gold: #C7A25B;
+  --brand-gold-dark: #A98845;
+  --brand-gold-light: #E6D2A8;
+  
+  --brand-navy: #0D1B2A;
+  --brand-navy-light: #2E3A45;
+  
+  --neutral-dark: #1A1A1A;
+  --neutral-text: #4A4A4A;
+  --neutral-bg: #F2F4F7;
+  --white: #FFFFFF;
+  
+  --text-on-dark: #E5E7EB;
+  --text-on-dark-muted: #D1D5DB;
+}
+
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+body {
+  background-color: var(--white);
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: var(--brand-gold);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-gold);
+  outline-offset: 2px;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 27s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.scroll-fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-fade-up.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-fade {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.scroll-fade.animate-in {
+  opacity: 1;
+}
+
+.scroll-slide-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-slide-left.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-slide-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-slide-right.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-animate {
+  opacity: 0;
+}
+
+.scroll-animate.visible {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.scroll-animate-fade {
+  opacity: 0;
+}
+
+.scroll-animate-fade.visible {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.scroll-animate-left {
+  opacity: 0;
+}
+
+.scroll-animate-left.visible {
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.scroll-animate-right {
+  opacity: 0;
+}
+
+.scroll-animate-right.visible {
+  animation: slideInRight 0.6s ease-out forwards;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+
+.article-content {
+  color: var(--neutral-text);
+  line-height: 1.8;
+}
+
+.article-content h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+
+.article-content h3 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--brand-navy);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.article-content p {
+  margin-bottom: 1.5rem;
+  color: var(--neutral-text);
+}
+
+.article-content ul,
+.article-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.article-content li {
+  margin-bottom: 0.75rem;
+  color: var(--neutral-text);
+}
+
+.article-content strong {
+  font-weight: 600;
+  color: var(--brand-navy);
+}
+
+.article-content a {
+  color: var(--brand-gold);
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.article-content a:hover {
+  color: var(--brand-gold-dark);
+}
+
+.article-content blockquote {
+  border-left: 4px solid var(--brand-gold);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: var(--neutral-text);
+}
+
+.article-content code {
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
