@@ -17,6 +17,12 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      graphics: {
+        Icon: '/components/admin/admin-icon.tsx',
+        Logo: '/components/admin/admin-logo.tsx',
+      },
+    },
   },
   collections: [Users, Media],
   editor: lexicalEditor(),

@@ -1,0 +1,28 @@
+/* Payload Admin Styles */
+:root {
+  --theme-bg: #0D1B2A;
+  --theme-text: #ffffff;
+  --theme-elevation-50: #1a2332;
+  --theme-elevation-100: #242d3d;
+  --theme-elevation-150: #2e3847;
+  --theme-elevation-200: #384252;
+  --theme-elevation-250: #424c5c;
+  --theme-elevation-300: #4c5767;
+  --theme-elevation-400: #566171;
+  --theme-elevation-500: #606b7c;
+  --theme-success-50: #C7A25B;
+  --theme-success-100: #C7A25B;
+  --theme-success-150: #C7A25B;
+  --theme-success-200: #C7A25B;
+  --theme-success-250: #C7A25B;
+  --theme-success-300: #C7A25B;
+  --theme-success-400: #C7A25B;
+  --theme-success-500: #C7A25B;
+  --theme-success-600: #C7A25B;
+  --theme-success-700: #C7A25B;
+  --theme-success-750: #C7A25B;
+  --theme-success-800: #C7A25B;
+  --theme-success-850: #C7A25B;
+  --theme-success-900: #C7A25B;
+  --theme-success-950: #C7A25B;
+}
