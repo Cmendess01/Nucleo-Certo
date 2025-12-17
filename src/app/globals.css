@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+:root {
   --color-brand-gold: #C7A25B
   --color-brand-gold-dark: #A98845
   --color-brand-gold-light: #E6D2A8
