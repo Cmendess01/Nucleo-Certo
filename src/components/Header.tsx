@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -22,7 +23,7 @@ export function Header() {
     { label: 'Início', path: '/' },
     { label: 'Quem Somos', path: '/quem-somos' },
     { label: 'Soluções', path: '/solucoes' },
-    { label: 'Metodologias', path: '/metodologias' },
+    { label: 'Metodologias', path: '/metodologia' },
     { label: 'Resultados', path: '/resultados' },
     { label: 'Conteúdos', path: '/conteudos' },
   ]

@@ -7,9 +7,11 @@ import {
   CheckCircle2, BookOpen, MessageCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getMostReadArticles } from '../data/articles';
 import { ArticleCard } from './ArticleCard';
 import { ScrollReveal } from './ScrollReveal';
+import { DraggableCarousel } from './DraggableCarousel';
 
 export function HomePage() {
   const stats = [
@@ -98,59 +100,65 @@ export function HomePage() {
   return (
     <div className="bg-white">
       
-      <section className="bg-[#0D1B2A] py-24 lg:py-32">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-4xl lg:text-5xl font-semibold text-white mb-6 leading-tight">
+      {/* HERO - FUNDO ESCURO */}
+      <section className="bg-[#0D1B2A] py-16 md:py-24 lg:py-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Conteúdo à Esquerda */}
+            <div className="text-center lg:text-left">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-4 md:mb-6 leading-tight">
                 Transformamos Instituições de Saúde
               </h1>
-              <p className="text-lg lg:text-xl text-[#E5E7EB] mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-[#E5E7EB] mb-6 md:mb-8 leading-relaxed">
                 15 anos de excelência em gestão estratégica, qualidade e acreditação, com metodologias proprietárias e resultados mensuráveis.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start">
                 <Link
                   href="/contato"
-                  className="px-8 py-4 bg-[#C7A25B] text-[#0D1B2A] font-semibold rounded-lg hover:bg-[#A98845] transition-all text-center"
+                  className="px-6 md:px-8 py-3 md:py-4 bg-[#C7A25B] text-[#0D1B2A] font-semibold rounded-lg hover:bg-[#A98845] transition-all text-sm md:text-base text-center"
                 >
                   Solicitar Diagnóstico
                 </Link>
                 <Link
                   href="/solucoes"
-                  className="px-8 py-4 bg-transparent border-2 border-white/40 text-white font-semibold rounded-lg hover:bg-white/10 transition-all text-center"
+                  className="px-6 md:px-8 py-3 md:py-4 bg-transparent border-2 border-white/40 text-white font-semibold rounded-lg hover:bg-white/10 transition-all text-sm md:text-base text-center"
                 >
                   Nossas Soluções
                 </Link>
               </div>
             </div>
             
-            <div className="flex justify-center lg:justify-end">
-              <img
+            {/* Logo à Direita */}
+            <div className="flex justify-center lg:justify-end order-first lg:order-last">
+              <Image
                 src="/assets/1f404d50844828d5bec32af7f6daa3817ba7bd98.png"
                 alt="Nucleo Core - Gestão Holística em Saúde"
-                className="w-64 lg:w-80 h-auto object-contain"
+                width={320}
+                height={320}
+                className="w-48 sm:w-64 lg:w-80 h-auto object-contain"
               />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+      {/* STATS - FUNDO CLARO */}
+      <section className="py-12 md:py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
             {stats.map((stat, index) => (
               <div 
                 key={index}
-                className="scroll-fade-up bg-white border border-gray-200 rounded-lg p-8 hover:border-[#C7A25B] transition-all"
+                className="scroll-fade-up bg-white border border-gray-200 rounded-lg p-6 md:p-8 hover:border-[#C7A25B] transition-all text-center"
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-4 mx-auto">
                   <stat.icon className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
                 </div>
-                <div className="text-4xl font-semibold text-[#0D1B2A] mb-2">
+                <div className="text-3xl md:text-4xl font-semibold text-[#0D1B2A] mb-2">
                   {stat.value}
                 </div>
-                <div className="text-[#4A4A4A]">
+                <div className="text-sm md:text-base text-[#4A4A4A]">
                   {stat.label}
                 </div>
               </div>
@@ -159,6 +167,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* ABOUT - FUNDO CLARO */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -222,6 +231,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* PILLARS - FUNDO CLARO */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16 scroll-fade-up">
@@ -258,6 +268,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* METHODOLOGIES - FUNDO ESCURO */}
       <section className="bg-[#0D1B2A] py-20">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -305,6 +316,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* DIFFERENTIALS - FUNDO CLARO */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -340,47 +352,50 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="flex justify-center lg:justify-start">
+      {/* CEO - FUNDO CLARO */}
+      <section className="py-12 md:py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div className="flex justify-center lg:justify-start order-last lg:order-first">
               <div className="relative">
-                <img
+                <Image
                   src="/assets/053cceb190e5715807931c0c7369521d233f8c72.png"
                   alt="Igor Bezerra - Consultor Sênior"
-                  className="w-96 h-96 object-cover rounded-2xl border-4 border-[#C7A25B]"
+                  width={384}
+                  height={384}
+                  className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 object-cover rounded-2xl border-4 border-[#C7A25B]"
                 />
               </div>
             </div>
             
-            <div>
-              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#C7A25B]/10 mb-6">
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#C7A25B]/10 mb-4 md:mb-6">
                 <span className="text-sm font-semibold uppercase tracking-wide text-[#0D1B2A]">Liderança</span>
               </div>
-              <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-3">
+              <h2 className="text-3xl md:text-4xl font-semibold text-[#0D1B2A] mb-2 md:mb-3">
                 Igor Bezerra
               </h2>
-              <div className="text-xl text-[#0D1B2A] font-semibold mb-6">
+              <div className="text-lg md:text-xl text-[#0D1B2A] font-semibold mb-4 md:mb-6">
                 Consultor Sênior
               </div>
-              <p className="text-lg text-[#4A4A4A] mb-8 leading-relaxed">
+              <p className="text-base md:text-lg text-[#4A4A4A] mb-6 md:mb-8 leading-relaxed">
                 Um dos mais respeitados consultores do país em acreditação e gestão estratégica em saúde. Com 15 anos de experiência, possui grande atuação em cargos estratégicos de hospitais e clínicas de médio e grande porte.
               </p>
               
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-                <div className="flex items-start gap-4">
-                  <BookOpen className="w-8 h-8 text-[#C7A25B] flex-shrink-0" />
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 md:p-6 mb-6 md:mb-8">
+                <div className="flex items-start gap-3 md:gap-4">
+                  <BookOpen className="w-6 h-6 md:w-8 md:h-8 text-[#C7A25B] flex-shrink-0" />
                   <div>
                     <div className="text-xs text-[#0D1B2A] font-semibold uppercase mb-1">Autor</div>
-                    <h4 className="text-lg font-medium text-[#0D1B2A] mb-1">O Guardião da Saúde</h4>
-                    <p className="text-[#4A4A4A]">O gestor de alta performance em organizações de saúde</p>
+                    <h4 className="text-base md:text-lg font-medium text-[#0D1B2A] mb-1">O Guardião da Saúde</h4>
+                    <p className="text-sm md:text-base text-[#4A4A4A]">O gestor de alta performance em organizações de saúde</p>
                   </div>
                 </div>
               </div>
               
               <Link
                 href="/contato"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-[#C7A25B] text-white font-semibold rounded-lg hover:bg-[#A98845] transition-all"
+                className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-[#C7A25B] text-white font-semibold rounded-lg hover:bg-[#A98845] transition-all w-full sm:w-auto justify-center"
               >
                 Agende uma Conversa
                 <ArrowRight className="w-5 h-5" />
@@ -390,6 +405,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* CLIENTES E PARCEIROS - FUNDO CINZA */}
       <section className="py-20 bg-gray-50 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -404,76 +420,88 @@ export function HomePage() {
             </p>
           </div>
 
-          <div className="relative">
-            <div className="flex animate-scroll">
-              <div className="flex gap-6 px-3">
-                {[
-                  'CDI Premium',
-                  'Instituto Genesis',
-                  'Instituto de Gestão e Humanização',
-                  'Clínica Pró Implante',
-                  'Instituto Partner',
-                  'Pitter Johnson Advogados',
-                  'Clínica Vivenza',
-                  'Hospital Blue Macaw',
-                  'Hospital Amparo',
-                  'Instituto do Fígado',
-                  'Clínica Dr Rogério Penna',
-                  'Hospital Serra da Mesa',
-                  'Innmed Gestão em Saúde',
-                  'Indústria Mecat',
-                  'Instituto Curados para Curar',
-                  'Clínica Curados para Curar',
-                  'ATCARE',
-                  'Laboratório Saúde',
-                  'Instituto Essência',
-                ].map((client, index) => (
-                  <div
-                    key={index}
-                    className="flex-shrink-0 bg-white border border-gray-200 rounded-lg px-8 py-6 hover:border-[#C7A25B] transition-all min-w-[280px]"
-                  >
-                    <p className="text-[#0D1B2A] font-medium text-center whitespace-nowrap">
-                      {client}
-                    </p>
-                  </div>
-                ))}
-              </div>
+          {/* Carrossel Infinito */}
+          <DraggableCarousel autoScroll={true} speed={1}>
+            <div className="flex gap-6 px-3">
+              {/* Primeiro conjunto de clientes */}
+              {[
+                'CDI Premium',
+                'Instituto Genesis',
+                'Instituto de Gestão e Humanização',
+                'Clínica Pró Implante',
+                'Instituto Partner',
+                'Pitter Johnson Advogados',
+                'Clínica Vivenza',
+                'Hospital Blue Macaw',
+                'Hospital Amparo',
+                'Instituto do Fígado',
+                'Clínica Dr Rogério Penna',
+                'Hospital Serra da Mesa',
+                'Innmed Gestão em Saúde',
+                'Indústria Mecat',
+                'Instituto Curados para Curar',
+                'Clínica Curados para Curar',
+                'ATCARE',
+                'Laboratório Saúde',
+                'Instituto Essência',
+                'Instituto Brasileiro de Alta Gestão',
+                'Clínica Dr Marcello Pedrosa',
+                'Clínica Odontológica Avanço',
+                'PJ Saúde',
+                'Marrom Beauty Luxury - EUA',
+                'Ofalti',
+              ].map((client, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 bg-white border border-gray-200 rounded-lg px-8 py-6 hover:border-[#C7A25B] transition-all min-w-[280px]"
+                >
+                  <p className="text-[#0D1B2A] font-medium text-center whitespace-nowrap">
+                    {client}
+                  </p>
+                </div>
+              ))}
               
-              <div className="flex gap-6 px-3">
-                {[
-                  'CDI Premium',
-                  'Instituto Genesis',
-                  'Instituto de Gestão e Humanização',
-                  'Clínica Pró Implante',
-                  'Instituto Partner',
-                  'Pitter Johnson Advogados',
-                  'Clínica Vivenza',
-                  'Hospital Blue Macaw',
-                  'Hospital Amparo',
-                  'Instituto do Fígado',
-                  'Clínica Dr Rogério Penna',
-                  'Hospital Serra da Mesa',
-                  'Innmed Gestão em Saúde',
-                  'Indústria Mecat',
-                  'Instituto Curados para Curar',
-                  'Clínica Curados para Curar',
-                  'ATCARE',
-                  'Laboratório Saúde',
-                  'Instituto Essência',
-                ].map((client, index) => (
-                  <div
-                    key={`duplicate-${index}`}
-                    className="flex-shrink-0 bg-white border border-gray-200 rounded-lg px-8 py-6 hover:border-[#C7A25B] transition-all min-w-[280px]"
-                  >
-                    <p className="text-[#0D1B2A] font-medium text-center whitespace-nowrap">
-                      {client}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              {/* Segundo conjunto (duplicado para loop infinito) */}
+              {[
+                'CDI Premium',
+                'Instituto Genesis',
+                'Instituto de Gestão e Humanização',
+                'Clínica Pró Implante',
+                'Instituto Partner',
+                'Pitter Johnson Advogados',
+                'Clínica Vivenza',
+                'Hospital Blue Macaw',
+                'Hospital Amparo',
+                'Instituto do Fígado',
+                'Clínica Dr Rogério Penna',
+                'Hospital Serra da Mesa',
+                'Innmed Gestão em Saúde',
+                'Indústria Mecat',
+                'Instituto Curados para Curar',
+                'Clínica Curados para Curar',
+                'ATCARE',
+                'Laboratório Saúde',
+                'Instituto Essência',
+                'Instituto Brasileiro de Alta Gestão',
+                'Clínica Dr Marcello Pedrosa',
+                'Clínica Odontológica Avanço',
+                'PJ Saúde',
+                'Marrom Beauty Luxury - EUA',
+                'Ofalti',
+              ].map((client, index) => (
+                <div
+                  key={`duplicate-${index}`}
+                  className="flex-shrink-0 bg-white border border-gray-200 rounded-lg px-8 py-6 hover:border-[#C7A25B] transition-all min-w-[280px]"
+                >
+                  <p className="text-[#0D1B2A] font-medium text-center whitespace-nowrap">
+                    {client}
+                  </p>
+                </div>
+              ))}
             </div>
-          </div>
+          </DraggableCarousel>
 
+          {/* CTA */}
           <div className="text-center mt-12">
             <Link
               href="/resultados"
@@ -486,6 +514,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* ARTIGOS MAIS LIDOS - FUNDO CLARO */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -520,6 +549,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* CTA FINAL - FUNDO DOURADO */}
       <section className="py-20 bg-[#E6D2A8]">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-6">
