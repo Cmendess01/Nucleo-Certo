@@ -1,23 +1,15 @@
 'use client'
 
 import { 
-  BookOpen, FileText, Video, Headphones, Calendar, Tag, 
-  User, ArrowRight, Download, ExternalLink, Clock
+  BookOpen, FileText, Video, Headphones, 
+  User, ArrowRight, Download
 } from 'lucide-react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { articles } from '../data/articles';
 import { ArticleCard } from './ArticleCard';
 
-interface ContentPageProps {
-  onNavigate?: (path: string) => void;
-}
-
-export function ContentPage({ onNavigate }: ContentPageProps) {
-  const handleNavigate = (path: string) => {
-    if (onNavigate) {
-      onNavigate(path);
-    }
-  };
-
+export function ContentPage() {
   const featured = {
     type: 'Livro',
     icon: BookOpen,
@@ -33,63 +25,6 @@ export function ContentPage({ onNavigate }: ContentPageProps) {
     { icon: Video, title: 'Vídeos', count: '15+' },
     { icon: Headphones, title: 'Podcasts', count: '10+' },
     { icon: Download, title: 'E-books', count: '8+' },
-  ];
-
-  const contents = [
-    {
-      type: 'Artigo',
-      icon: FileText,
-      title: 'Gestão Estratégica em Tempos de Crise',
-      description: 'Como manter a performance organizacional em cenários desafiadores',
-      date: '15 Nov 2024',
-      readTime: '8 min',
-      tags: ['Gestão', 'Estratégia'],
-    },
-    {
-      type: 'E-book',
-      icon: Download,
-      title: 'Guia Completo de Acreditação ONA',
-      description: 'Passo a passo para implementação dos níveis 1, 2 e 3',
-      date: '10 Nov 2024',
-      readTime: '45 min',
-      tags: ['Qualidade', 'Acreditação'],
-    },
-    {
-      type: 'Vídeo',
-      icon: Video,
-      title: 'KPIs Essenciais para Hospitais',
-      description: 'Os indicadores mais importantes para gestão hospitalar',
-      date: '5 Nov 2024',
-      readTime: '12 min',
-      tags: ['KPIs', 'Indicadores'],
-    },
-    {
-      type: 'Artigo',
-      icon: FileText,
-      title: 'Segurança do Paciente: Cultura e Prática',
-      description: 'Construindo uma cultura de segurança efetiva',
-      date: '1 Nov 2024',
-      readTime: '10 min',
-      tags: ['Segurança', 'Qualidade'],
-    },
-    {
-      type: 'Podcast',
-      icon: Headphones,
-      title: 'Humanização na Gestão em Saúde',
-      description: 'Entrevista com Igor Bezerra sobre liderança humanizada',
-      date: '28 Out 2024',
-      readTime: '35 min',
-      tags: ['Liderança', 'Humanização'],
-    },
-    {
-      type: 'E-book',
-      icon: Download,
-      title: 'Metodologias NEO, MMGS e MPCO',
-      description: 'Conheça nossas metodologias proprietárias em detalhes',
-      date: '20 Out 2024',
-      readTime: '30 min',
-      tags: ['Metodologias', 'Estratégia'],
-    },
   ];
 
   return (
@@ -122,12 +57,10 @@ export function ContentPage({ onNavigate }: ContentPageProps) {
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-12">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="flex justify-center">
-                <div className="relative">
-                  <img
-                    src={bookImage}
-                    alt="O Guardião da Saúde - Igor Bezerra"
-                    className="w-80 h-96 object-cover rounded-lg shadow-2xl"
-                  />
+                <div className="relative w-80 h-96">
+                  <div className="w-full h-full bg-gradient-to-br from-[#C7A25B] to-[#A98845] rounded-lg shadow-2xl flex items-center justify-center">
+                    <BookOpen className="w-24 h-24 text-white" />
+                  </div>
                 </div>
               </div>
               <div>
@@ -153,13 +86,13 @@ export function ContentPage({ onNavigate }: ContentPageProps) {
                     <span>{featured.publisher}</span>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleNavigate('/contato')}
+                <Link
+                  href="/contato"
                   className="px-6 py-3 bg-[#C7A25B] text-white font-medium rounded-lg hover:bg-[#A98845] transition-all inline-flex items-center gap-2"
                 >
                   Saiba Mais
                   <ArrowRight className="w-5 h-5" />
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -203,7 +136,7 @@ export function ContentPage({ onNavigate }: ContentPageProps) {
       </section>
 
       {/* ARTIGOS */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="inline-flex items-center px-4 py-1 rounded-full bg-[#C7A25B]/10 mb-6">
@@ -222,18 +155,17 @@ export function ContentPage({ onNavigate }: ContentPageProps) {
               <ArticleCard
                 key={article.id}
                 article={article}
-                onNavigate={handleNavigate}
               />
             ))}
           </div>
 
           <div className="text-center mt-12">
-            <button
-              onClick={() => handleNavigate('/artigos')}
-              className="px-8 py-4 bg-[#C7A25B] text-white font-semibold rounded-lg hover:bg-[#A98845] transition-all"
+            <Link
+              href="/artigos"
+              className="inline-block px-8 py-4 bg-[#C7A25B] text-white font-semibold rounded-lg hover:bg-[#A98845] transition-all"
             >
               Ver Todos os Artigos
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -247,12 +179,12 @@ export function ContentPage({ onNavigate }: ContentPageProps) {
           <p className="text-xl text-[#1F2937] mb-10 leading-relaxed">
             Inscreva-se para receber artigos exclusivos sobre gestão em saúde
           </p>
-          <button
-            onClick={() => handleNavigate('/contato')}
-            className="px-8 py-4 bg-[#0D1B2A] text-white text-lg font-medium rounded-lg hover:bg-[#1F2937] transition-all"
+          <Link
+            href="/contato"
+            className="inline-block px-8 py-4 bg-[#0D1B2A] text-white text-lg font-medium rounded-lg hover:bg-[#1F2937] transition-all"
           >
             Entrar em Contato
-          </button>
+          </Link>
         </div>
       </section>
     </div>

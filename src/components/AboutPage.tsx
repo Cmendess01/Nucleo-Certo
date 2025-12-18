@@ -1,20 +1,12 @@
 'use client'
 
 import { 
-  Target, Award, Shield, Sparkles, Heart, Users, ArrowRight, CheckCircle2, BookOpen,
+  Target, Award, Shield, Sparkles, Heart, Users, ArrowRight, CheckCircle2,
   Compass, FileCheck, Calculator, LandPlot, Stethoscope, Lightbulb, Presentation, Trophy
 } from 'lucide-react';
-interface AboutPageProps {
-  onNavigate?: (path: string) => void;
-}
+import Link from 'next/link';
 
-export function AboutPage({ onNavigate }: AboutPageProps) {
-  const handleNavigate = (path: string) => {
-    if (onNavigate) {
-      onNavigate(path);
-    }
-  };
-
+export function AboutPage() {
   const timeline = [
     { year: '2010', title: 'Fundação', description: 'Nucleo Core é fundada com foco em qualidade assistencial e acreditação ONA' },
     { year: '2015', title: 'Expansão Holística', description: 'Ampliação do escopo para gestão holística em saúde' },
@@ -209,13 +201,11 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             </h2>
           </div>
 
-          {/* Foto do Casal */}
+          {/* Placeholder para foto do casal */}
           <div className="flex justify-center mb-16">
-            <img
-              src={leadershipImage}
-              alt="Oslane e Igor Bezerra - Liderança Nucleo Core"
-              className="w-full max-w-2xl h-auto object-cover rounded-2xl border-4 border-[#C7A25B]"
-            />
+            <div className="w-full max-w-2xl h-96 bg-gradient-to-br from-[#C7A25B] to-[#A98845] rounded-2xl border-4 border-[#C7A25B] flex items-center justify-center">
+              <Users className="w-32 h-32 text-white" />
+            </div>
           </div>
 
           {/* Grid de Líderes */}
@@ -275,13 +265,13 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           </div>
 
           <div className="text-center mt-12">
-            <button
-              onClick={() => handleNavigate('/contato')}
+            <Link
+              href="/contato"
               className="inline-flex items-center gap-2 px-8 py-4 bg-[#C7A25B] text-white font-medium rounded-lg hover:bg-[#A98845] transition-all text-lg"
             >
               Entre em Contato
               <ArrowRight className="w-5 h-5" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -441,12 +431,12 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           <p className="text-xl text-[#1F2937] mb-10 leading-relaxed">
             Agende uma conversa estratégica com nossos especialistas
           </p>
-          <button
-            onClick={() => handleNavigate('/contato')}
-            className="px-8 py-4 bg-[#0D1B2A] text-white text-lg font-medium rounded-lg hover:bg-[#1F2937] transition-all"
+          <Link
+            href="/contato"
+            className="inline-block px-8 py-4 bg-[#0D1B2A] text-white text-lg font-medium rounded-lg hover:bg-[#1F2937] transition-all"
           >
             Fale Conosco
-          </button>
+          </Link>
         </div>
       </section>
     </div>

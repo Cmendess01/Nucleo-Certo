@@ -23,7 +23,7 @@ export function Header() {
     { label: 'Início', path: '/' },
     { label: 'Quem Somos', path: '/quem-somos' },
     { label: 'Soluções', path: '/solucoes' },
-    { label: 'Metodologias', path: '/metodologia' },
+    { label: 'Metodologias', path: '/metodologias' },
     { label: 'Resultados', path: '/resultados' },
     { label: 'Conteúdos', path: '/conteudos' },
   ]
