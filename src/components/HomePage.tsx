@@ -141,102 +141,101 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* STATS - FUNDO CLARO */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-            {stats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <div 
-                  key={index}
-                  className="scroll-fade-up bg-white border border-gray-200 rounded-lg p-6 md:p-8 hover:border-[#C7A25B] transition-all text-center"
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                >
-                  <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-4 mx-auto">
-                    <IconComponent className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+      {/* STATS - FUNDO CINZA CLARO */}
+        <section className="py-12 md:py-20 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
+              {stats.map((stat, index) => {
+                const IconComponent = stat.icon;
+                return (
+                  <div 
+                    key={index}
+                    className="bg-white border border-gray-200 rounded-lg p-6 md:p-8 hover:border-[#C7A25B] transition-all text-center shadow-sm"
+                  >
+                    <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-4 mx-auto">
+                      <IconComponent className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+                    </div>
+                    <div className="text-3xl md:text-4xl font-semibold text-[#0D1B2A] mb-2">
+                      {stat.value}
+                    </div>
+                    <div className="text-sm md:text-base text-[#4A4A4A]">
+                      {stat.label}
+                    </div>
                   </div>
-                  <div className="text-3xl md:text-4xl font-semibold text-[#0D1B2A] mb-2">
-                    {stat.value}
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+      {/* ABOUT - FUNDO BRANCO */}
+        <section className="py-20 bg-white">
+          <div className="max-w-6xl mx-auto px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#C7A25B]/10 mb-6">
+                  <span className="text-sm font-semibold uppercase tracking-wide text-[#0D1B2A]">Quem Somos</span>
+                </div>
+                <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-6 leading-tight">
+                  Pioneiros em Gestão Holística em Saúde
+                </h2>
+                <p className="text-lg text-[#4A4A4A] mb-6 leading-relaxed">
+                  Há 15 anos transformamos instituições de saúde através de uma abordagem holística que integra gestão estratégica, qualidade, finanças e humanização.
+                </p>
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
+                    <p className="text-[#4A4A4A]">Primeira consultoria ONA de Goiás</p>
                   </div>
-                  <div className="text-sm md:text-base text-[#4A4A4A]">
-                    {stat.label}
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
+                    <p className="text-[#4A4A4A]">Metodologias proprietárias registradas</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
+                    <p className="text-[#4A4A4A]">Atuação nacional e internacional</p>
                   </div>
                 </div>
-              );
-            })}
+                <Link
+                  href="/quem-somos"
+                  className="inline-flex items-center gap-2 text-[#0D1B2A] font-semibold hover:text-[#2E3A45] transition-colors"
+                >
+                  Conheça Nossa História
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              </div>
+              <div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
+                    <Heart className="w-8 h-8 text-[#C7A25B] mb-3" />
+                    <h4 className="font-medium text-[#0D1B2A] mb-2">Humanização</h4>
+                    <p className="text-sm text-[#4A4A4A]">Cuidado centrado no paciente</p>
+                  </div>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
+                    <Target className="w-8 h-8 text-[#C7A25B] mb-3" />
+                    <h4 className="font-medium text-[#0D1B2A] mb-2">Estratégia</h4>
+                    <p className="text-sm text-[#4A4A4A]">Visão de longo prazo</p>
+                  </div>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
+                    <BarChart3 className="w-8 h-8 text-[#C7A25B] mb-3" />
+                    <h4 className="font-medium text-[#0D1B2A] mb-2">Dados</h4>
+                    <p className="text-sm text-[#4A4A4A]">Decisões inteligentes</p>
+                  </div>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
+                    <Award className="w-8 h-8 text-[#C7A25B] mb-3" />
+                    <h4 className="font-medium text-[#0D1B2A] mb-2">Excelência</h4>
+                    <p className="text-sm text-[#4A4A4A]">Padrões internacionais</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ABOUT - FUNDO CLARO */}
+      {/* PILLARS - FUNDO CINZA CLARO */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="scroll-fade-up">
-              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#C7A25B]/10 mb-6">
-                <span className="text-sm font-semibold uppercase tracking-wide text-[#0D1B2A]">Quem Somos</span>
-              </div>
-              <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-6 leading-tight">
-                Pioneiros em Gestão Holística em Saúde
-              </h2>
-              <p className="text-lg text-[#4A4A4A] mb-6 leading-relaxed">
-                Há 15 anos transformamos instituições de saúde através de uma abordagem holística que integra gestão estratégica, qualidade, finanças e humanização.
-              </p>
-              <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
-                  <p className="text-[#4A4A4A]">Primeira consultoria ONA de Goiás</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
-                  <p className="text-[#4A4A4A]">Metodologias proprietárias registradas</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
-                  <p className="text-[#4A4A4A]">Atuação nacional e internacional</p>
-                </div>
-              </div>
-              <Link
-                href="/quem-somos"
-                className="inline-flex items-center gap-2 text-[#0D1B2A] font-semibold hover:text-[#2E3A45] transition-colors"
-              >
-                Conheça Nossa História
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-            <div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] transition-all">
-                  <Heart className="w-8 h-8 text-[#C7A25B] mb-3" />
-                  <h4 className="font-medium text-[#0D1B2A] mb-2">Humanização</h4>
-                  <p className="text-sm text-[#4A4A4A]">Cuidado centrado no paciente</p>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] transition-all">
-                  <Target className="w-8 h-8 text-[#C7A25B] mb-3" />
-                  <h4 className="font-medium text-[#0D1B2A] mb-2">Estratégia</h4>
-                  <p className="text-sm text-[#4A4A4A]">Visão de longo prazo</p>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] transition-all">
-                  <BarChart3 className="w-8 h-8 text-[#C7A25B] mb-3" />
-                  <h4 className="font-medium text-[#0D1B2A] mb-2">Dados</h4>
-                  <p className="text-sm text-[#4A4A4A]">Decisões inteligentes</p>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] transition-all">
-                  <Award className="w-8 h-8 text-[#C7A25B] mb-3" />
-                  <h4 className="font-medium text-[#0D1B2A] mb-2">Excelência</h4>
-                  <p className="text-sm text-[#4A4A4A]">Padrões internacionais</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PILLARS - FUNDO CLARO */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-16 scroll-fade-up">
+          <div className="text-center mb-16">
             <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#C7A25B]/10 mb-6">
               <span className="text-sm font-semibold uppercase tracking-wide text-[#0D1B2A]">Pilares de Atuação</span>
             </div>
@@ -247,15 +246,14 @@ export function HomePage() {
               Seis pilares estratégicos que sustentam nossa abordagem holística
             </p>
           </div>
-                
+                  
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {pillars.map((pillar, index) => {
               const IconComponent = pillar.icon;
               return (
                 <div
                   key={index}
-                  className="scroll-fade-up bg-white border border-gray-200 rounded-lg p-8 hover:border-[#C7A25B] hover:shadow-lg transition-all"
-                  style={{ transitionDelay: `${index * 100}ms` }}
+                  className="bg-white border border-gray-200 rounded-lg p-8 hover:border-[#C7A25B] hover:shadow-lg transition-all"
                 >
                   <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-6">
                     <IconComponent className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
