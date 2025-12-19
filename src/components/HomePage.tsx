@@ -1,16 +1,15 @@
 'use client'
 
 import { 
-  Heart, Target, Award, BarChart3, Building2, GraduationCap, 
-  ClipboardCheck, DollarSign, ArrowRight, MapPin, Calendar, Globe,
-  Compass, FileCheck, Calculator, Stethoscope, Lightbulb, Presentation,
+  Heart, Target, Award, BarChart3, Building2, 
+  ClipboardCheck, ArrowRight, MapPin, Calendar, Globe,
+  Compass, Calculator, Lightbulb, Presentation,
   CheckCircle2, BookOpen, MessageCircle
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getMostReadArticles } from '../data/articles';
 import { ArticleCard } from './ArticleCard';
-import { ScrollReveal } from './ScrollReveal';
 import { DraggableCarousel } from './DraggableCarousel';
 
 export function HomePage() {
