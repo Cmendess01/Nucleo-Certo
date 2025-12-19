@@ -45,45 +45,43 @@ export function ContentPage() {
       {/* FEATURED - BOOK */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-1 rounded-full bg-[#C7A25B]/10 mb-6">
-              <span className="text-xs font-medium uppercase tracking-wide text-[#0D1B2A]">Destaque</span>
-            </div>
-            <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-6">
-              Livro do CEO
-            </h2>
-          </div>
-
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-12">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Imagem do Livro */}
               <div className="flex justify-center">
-                <div className="relative w-80 h-96">
-                  <div className="w-full h-full bg-gradient-to-br from-[#C7A25B] to-[#A98845] rounded-lg shadow-2xl flex items-center justify-center">
-                    <BookOpen className="w-24 h-24 text-white" />
-                  </div>
+                <div className="relative w-80 h-[480px]">
+                  <Image
+                    src="/assets/Livro.png"
+                    alt="O Guardião da Saúde - Igor Bezerra"
+                    width={320}
+                    height={480}
+                    className="w-full h-full object-cover rounded-lg shadow-2xl"
+                  />
                 </div>
               </div>
+
+              {/* Conteúdo */}
               <div>
                 <div className="w-12 h-12 rounded-lg bg-[#C7A25B] flex items-center justify-center mb-6">
-                  <featured.icon className="w-6 h-6 text-white" strokeWidth={2} />
+                  <BookOpen className="w-6 h-6 text-white" strokeWidth={2} />
                 </div>
                 <h3 className="text-3xl font-semibold text-[#0D1B2A] mb-2">
-                  {featured.title}
+                  O Guardião da Saúde
                 </h3>
                 <p className="text-xl text-[#0D1B2A] mb-4">
-                  {featured.subtitle}
+                  O gestor de alta performance em organizações de saúde
                 </p>
                 <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                  {featured.description}
+                  Um guia completo para gestores que buscam excelência e transformação em suas instituições de saúde.
                 </p>
                 <div className="space-y-2 mb-8">
                   <div className="flex items-center gap-2 text-gray-700">
                     <User className="w-5 h-5 text-[#C7A25B]" />
-                    <span>{featured.author}</span>
+                    <span>Igor Bezerra</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <BookOpen className="w-5 h-5 text-[#C7A25B]" />
-                    <span>{featured.publisher}</span>
+                    <span>Editora Nucleo Core</span>
                   </div>
                 </div>
                 <Link

@@ -131,7 +131,7 @@ export function HomePage() {
             {/* Logo à Direita */}
             <div className="flex justify-center lg:justify-end order-first lg:order-last">
               <Image
-                src="/assets/1f404d50844828d5bec32af7f6daa3817ba7bd98.png"
+                src="/assets/logo-hero.png"
                 alt="Nucleo Core - Gestão Holística em Saúde"
                 width={320}
                 height={320}
@@ -146,23 +146,26 @@ export function HomePage() {
       <section className="py-12 md:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-            {stats.map((stat, index) => (
-              <div 
-                key={index}
-                className="scroll-fade-up bg-white border border-gray-200 rounded-lg p-6 md:p-8 hover:border-[#C7A25B] transition-all text-center"
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-4 mx-auto">
-                  <stat.icon className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+            {stats.map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <div 
+                  key={index}
+                  className="scroll-fade-up bg-white border border-gray-200 rounded-lg p-6 md:p-8 hover:border-[#C7A25B] transition-all text-center"
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-4 mx-auto">
+                    <IconComponent className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+                  </div>
+                  <div className="text-3xl md:text-4xl font-semibold text-[#0D1B2A] mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm md:text-base text-[#4A4A4A]">
+                    {stat.label}
+                  </div>
                 </div>
-                <div className="text-3xl md:text-4xl font-semibold text-[#0D1B2A] mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-sm md:text-base text-[#4A4A4A]">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -245,25 +248,28 @@ export function HomePage() {
               Seis pilares estratégicos que sustentam nossa abordagem holística
             </p>
           </div>
-          
+                
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {pillars.map((pillar, index) => (
-              <div
-                key={index}
-                className="scroll-fade-up bg-white border border-gray-200 rounded-lg p-8 hover:border-[#C7A25B] hover:shadow-lg transition-all"
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-6">
-                  <pillar.icon className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+            {pillars.map((pillar, index) => {
+              const IconComponent = pillar.icon;
+              return (
+                <div
+                  key={index}
+                  className="scroll-fade-up bg-white border border-gray-200 rounded-lg p-8 hover:border-[#C7A25B] hover:shadow-lg transition-all"
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-6">
+                    <IconComponent className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+                  </div>
+                  <h3 className="text-xl font-medium text-[#0D1B2A] mb-3">
+                    {pillar.title}
+                  </h3>
+                  <p className="text-[#4A4A4A] leading-relaxed">
+                    {pillar.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-medium text-[#0D1B2A] mb-3">
-                  {pillar.title}
-                </h3>
-                <p className="text-[#4A4A4A] leading-relaxed">
-                  {pillar.description}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -284,25 +290,28 @@ export function HomePage() {
           </div>
           
           <div className="grid lg:grid-cols-3 gap-8">
-            {methodologies.map((method, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg p-8 hover:shadow-xl transition-all"
-              >
-                <div className="w-14 h-14 rounded-lg bg-[#C7A25B] flex items-center justify-center mb-6">
-                  <method.icon className="w-7 h-7 text-white" strokeWidth={2} />
+            {methodologies.map((method, index) => {
+              const IconComponent = method.icon;
+              return (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg p-8 hover:shadow-xl transition-all"
+                >
+                  <div className="w-14 h-14 rounded-lg bg-[#C7A25B] flex items-center justify-center mb-6">
+                    <IconComponent className="w-7 h-7 text-white" strokeWidth={2} />
+                  </div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#C7A25B]/10 mb-4">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-[#0D1B2A]">{method.name}</span>
+                  </div>
+                  <h3 className="text-xl font-medium text-[#0D1B2A] mb-3">
+                    {method.fullName}
+                  </h3>
+                  <p className="text-[#4A4A4A] leading-relaxed">
+                    {method.description}
+                  </p>
                 </div>
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#C7A25B]/10 mb-4">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-[#0D1B2A]">{method.name}</span>
-                </div>
-                <h3 className="text-xl font-medium text-[#0D1B2A] mb-3">
-                  {method.fullName}
-                </h3>
-                <p className="text-[#4A4A4A] leading-relaxed">
-                  {method.description}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
           
           <div className="text-center mt-12">
@@ -332,22 +341,25 @@ export function HomePage() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {differentials.map((diff, index) => (
-              <div
-                key={index}
-                className="bg-white border border-gray-200 rounded-lg p-8 text-center hover:border-[#C7A25B] hover:shadow-lg transition-all"
-              >
-                <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mx-auto mb-6">
-                  <diff.icon className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+            {differentials.map((diff, index) => {
+              const IconComponent = diff.icon;
+              return (
+                <div
+                  key={index}
+                  className="bg-white border border-gray-200 rounded-lg p-8 text-center hover:border-[#C7A25B] hover:shadow-lg transition-all"
+                >
+                  <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mx-auto mb-6">
+                    <IconComponent className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+                  </div>
+                  <h3 className="text-lg font-medium text-[#0D1B2A] mb-3">
+                    {diff.title}
+                  </h3>
+                  <p className="text-[#4A4A4A] leading-relaxed">
+                    {diff.description}
+                  </p>
                 </div>
-                <h3 className="text-lg font-medium text-[#0D1B2A] mb-3">
-                  {diff.title}
-                </h3>
-                <p className="text-[#4A4A4A] leading-relaxed">
-                  {diff.description}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -359,7 +371,7 @@ export function HomePage() {
             <div className="flex justify-center lg:justify-start order-last lg:order-first">
               <div className="relative">
                 <Image
-                  src="/assets/053cceb190e5715807931c0c7369521d233f8c72.png"
+                  src="/assets/igor-bezerra.png"
                   alt="Igor Bezerra - Consultor Sênior"
                   width={384}
                   height={384}

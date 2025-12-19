@@ -5,6 +5,7 @@ import {
   Compass, FileCheck, Calculator, LandPlot, Stethoscope, Lightbulb, Presentation, Trophy
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function AboutPage() {
   const timeline = [
@@ -201,13 +202,16 @@ export function AboutPage() {
             </h2>
           </div>
 
-          {/* Placeholder para foto do casal */}
+          {/* Foto do casal */}
           <div className="flex justify-center mb-16">
-            <div className="w-full max-w-2xl h-96 bg-gradient-to-br from-[#C7A25B] to-[#A98845] rounded-2xl border-4 border-[#C7A25B] flex items-center justify-center">
-              <Users className="w-32 h-32 text-white" />
-            </div>
+            <Image
+              src="/assets/OslaneIgorBezerra.png"
+              alt="Oslane e Igor Bezerra - Liderança Nucleo Core"
+              width={800}
+              height={600}
+              className="w-full max-w-2xl h-auto object-cover rounded-2xl border-4 border-[#C7A25B]"
+            />
           </div>
-
           {/* Grid de Líderes */}
           <div className="grid lg:grid-cols-2 gap-12">
             

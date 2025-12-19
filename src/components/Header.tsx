@@ -34,7 +34,7 @@ export function Header() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 transition-opacity hover:opacity-80">
-            <img src="/assets/1f404d50844828d5bec32af7f6daa3817ba7bd98.png" alt="Nucleo Core" className="h-12 w-auto" />
+            <img src="/assets/logo-cabecalho.png" alt="Nucleo Core" className="h-12 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
