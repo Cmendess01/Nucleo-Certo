@@ -1,17 +1,16 @@
-import type { CollectionConfig } from 'payload'
+import { CollectionConfig } from 'payload';
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  admin: {
+    group: 'Mídia',
+  },
   access: {
     read: () => true,
+    create: ({ req: { user } }) => !!user,
+    update: ({ req: { user } }) => !!user,
+    delete: ({ req: { user } }) => !!user,
   },
-  fields: [
-    {
-      name: 'alt',
-      type: 'text',
-      required: true,
-    },
-  ],
   upload: {
     staticDir: 'media',
     imageSizes: [
@@ -24,17 +23,24 @@ export const Media: CollectionConfig = {
       {
         name: 'card',
         width: 768,
-        height: 1024,
+        height: 512,
         position: 'centre',
       },
       {
-        name: 'tablet',
-        width: 1024,
-        height: undefined,
+        name: 'featured',
+        width: 1200,
+        height: 630,
         position: 'centre',
       },
     ],
-    adminThumbnail: 'thumbnail',
     mimeTypes: ['image/*'],
   },
-}
+  fields: [
+    {
+      name: 'alt',
+      type: 'text',
+      required: true,
+      label: 'Texto Alternativo',
+    },
+  ],
+};

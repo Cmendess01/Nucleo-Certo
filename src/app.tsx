@@ -74,56 +74,55 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'about':
-        return <AboutPage onNavigate={handleNavigate} />;
+        return <AboutPage />;
       case 'solutions':
-        return <SolutionsPage onNavigate={handleNavigate} />;
+        return <SolutionsPage />;
       case 'methodologies':
-        return <MethodologiesPage onNavigate={handleNavigate} />;
+        return <MethodologiesPage />;
       case 'results':
-        return <ResultsPage onNavigate={handleNavigate} />;
+        return <ResultsPage />;
       case 'content':
-        return <ContentPage onNavigate={handleNavigate} />;
+        return <ContentPage />;
       case 'contact':
-        return <ContactPage onNavigate={handleNavigate} />;
+        return <ContactPage />;
       case 'privacy-policy':
-        return <PrivacyPolicyPage onNavigate={handleNavigate} />;
+        return <PrivacyPolicyPage />;
       case 'terms-of-use':
-        return <TermsOfUsePage onNavigate={handleNavigate} />;
+        return <TermsOfUsePage />;
       case 'articles':
-        return <ArticlesPage onNavigate={handleNavigate} />;
+        return <ArticlesPage />;
       case 'article-detail':
         return currentArticleId ? (
-          <ArticlePage articleId={currentArticleId} onNavigate={handleNavigate} />
+          <ArticlePage articleId={currentArticleId} />
         ) : (
-          <ArticlesPage onNavigate={handleNavigate} />
+          <ArticlesPage />
         );
       default:
-        return <HomePage onNavigate={handleNavigate} />;
+        return <HomePage />;
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header currentPage={currentPage} onNavigate={handleNavigate} />
-      <main className="flex-1">
-        {renderPage()}
-      </main>
-      <Footer onNavigate={handleNavigate} />
+  <div className="min-h-screen flex flex-col">
+    <Header />
+    <main className="flex-1">
+      {renderPage()}
+    </main>
+    <Footer />
 
-      {/* Floating WhatsApp Button */}
-      <a
-        href="https://wa.me/5562981859003"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:brightness-110 transition-all duration-300 group"
-        aria-label="Fale conosco no WhatsApp"
-      >
-        <MessageCircle className="w-7 h-7 animate-pulse" />
-        {/* Tooltip */}
-        <span className="absolute right-16 bg-[#2c3e50] text-white text-sm px-4 py-2 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-          Fale conosco!
-        </span>
-      </a>
-    </div>
-  );
-}
+    {/* Floating WhatsApp Button */}
+    <a
+      href="https://wa.me/5562981859003"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:brightness-110 transition-all duration-300 group"
+      aria-label="Fale conosco no WhatsApp"
+    >
+      <MessageCircle className="w-7 h-7 animate-pulse" />
+      {/* Tooltip */}
+      <span className="absolute right-16 bg-[#2c3e50] text-white text-sm px-4 py-2 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+        Fale conosco!
+      </span>
+    </a>
+  </div>
+)}

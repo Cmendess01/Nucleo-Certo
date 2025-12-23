@@ -1,29 +1,101 @@
 'use client'
 
-import { useState } from 'react';
-import { Search, Filter } from 'lucide-react';
-import { articles } from '../data/articles';
-import { ArticleCard } from './ArticleCard';
-import { AnimatedSection } from './AnimatedSection';
+import { useState, useEffect } from 'react';
+import { Search, Filter, Calendar, Clock, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+
+interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  featuredImage: {
+    url: string;
+    alt: string;
+  };
+  author: string;
+  category: string;
+  readTime: number;
+  publishedAt: string;
+}
 
 interface ArticlesPageProps {
   onNavigate?: (path: string) => void;
 }
 
 export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
 
-  // Extrair categorias únicas
-  const categories = ['Todos', ...Array.from(new Set(articles.map(a => a.category)))];
+  // Categorias disponíveis
+  const categories = [
+    'Todos',
+    'Gestão Estratégica',
+    'Qualidade & Acreditação',
+    'Finanças',
+    'Liderança',
+    'Inovação',
+    'Setor Público'
+  ];
+
+  // Buscar posts do Payload
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams({ limit: '50' });
+        
+        const response = await fetch(`/api/posts/list?${params}`);
+        const data = await response.json();
+        
+        setPosts(data.docs || []);
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar posts:', error);
+        setLoading(false);
+      }
+    }
+
+    fetchPosts();
+  }, []);
 
   // Filtrar artigos
-  const filteredArticles = articles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'Todos' || article.category === selectedCategory;
+  const filteredArticles = posts.filter(post => {
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'Todos' || post.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  // Handler para navegação
+  const handleArticleClick = (slug: string) => {
+    if (onNavigate) {
+      onNavigate(`/artigo/${slug}`);
+    } else {
+      window.location.href = `/artigo/${slug}`;
+    }
+  };
+
+  const handleContactClick = () => {
+    if (onNavigate) {
+      onNavigate('/contato');
+    } else {
+      window.location.href = '/contato';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#C7A25B] mx-auto mb-4"></div>
+          <p className="text-lg text-[#4A4A4A]">Carregando artigos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white">
@@ -94,13 +166,55 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {filteredArticles.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {filteredArticles.map((article) => (
-                <AnimatedSection key={article.id}>
-                  <ArticleCard
-                    article={article}
-                    onNavigate={onNavigate}
-                  />
-                </AnimatedSection>
+              {filteredArticles.map((post) => (
+                <article
+                  key={post.id}
+                  onClick={() => handleArticleClick(post.slug)}
+                  className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
+                >
+                  {/* Imagem */}
+                  <div className="relative h-56 overflow-hidden">
+                    <Image
+                      src={post.featuredImage?.url || '/placeholder.jpg'}
+                      alt={post.featuredImage?.alt || post.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 bg-[#C7A25B] text-white text-xs font-semibold rounded-full shadow-lg">
+                        {post.category}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Conteúdo */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-[#0D1B2A] mb-3 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    
+                    <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+                      {post.excerpt}
+                    </p>
+
+                    <div className="flex items-center justify-between text-sm text-gray-500 mb-4 pb-4 border-b border-gray-100">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>{new Date(post.publishedAt).toLocaleDateString('pt-BR')}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        <span>{post.readTime} min</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">{post.author}</span>
+                      <ArrowRight className="w-5 h-5 text-[#C7A25B] group-hover:translate-x-2 transition-transform duration-300" />
+                    </div>
+                  </div>
+                </article>
               ))}
             </div>
           ) : (
@@ -132,7 +246,7 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
             Entre em contato e fique por dentro das melhores práticas em gestão de saúde
           </p>
           <button
-            onClick={() => onNavigate && onNavigate('/contato')}
+            onClick={handleContactClick}
             className="px-8 py-4 bg-[#0D1B2A] text-white font-semibold rounded-lg hover:bg-[#2E3A45] transition-all"
           >
             Fale Conosco
