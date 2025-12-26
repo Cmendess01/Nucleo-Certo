@@ -49,6 +49,15 @@ export const Posts: CollectionConfig = {
       },
     },
     {
+      name: 'content',
+      type: 'richText',
+      required: true,
+      label: 'Conteúdo',
+      admin: {
+        description: 'Conteúdo completo do artigo',
+      },
+    },
+    {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
@@ -67,11 +76,10 @@ export const Posts: CollectionConfig = {
       type: 'select',
       options: [
         { label: 'Gestão Estratégica', value: 'Gestão Estratégica' },
-        { label: 'Qualidade & Acreditação', value: 'Qualidade & Acreditação' },
-        { label: 'Finanças', value: 'Finanças' },
-        { label: 'Liderança', value: 'Liderança' },
-        { label: 'Inovação', value: 'Inovação' },
-        { label: 'Setor Público', value: 'Setor Público' },
+        { label: 'Qualidade e Acreditação', value: 'Qualidade e Acreditação' },
+        { label: 'Gestão Financeira', value: 'Gestão Financeira' },
+        { label: 'Gestão de Pessoas', value: 'Gestão de Pessoas' },
+        { label: 'Inovação e Tecnologia', value: 'Inovação e Tecnologia' },
       ],
       required: true,
       label: 'Categoria',
@@ -80,11 +88,11 @@ export const Posts: CollectionConfig = {
       name: 'publishedAt',
       type: 'date',
       required: true,
-      defaultValue: () => new Date().toISOString(),
+      defaultValue: () => new Date().toISOString().split('T')[0],
       label: 'Data de Publicação',
       admin: {
         date: {
-          pickerAppearance: 'dayAndTime',
+          pickerAppearance: 'dayOnly',
         },
       },
     },

@@ -33,11 +33,6 @@ export const Articles: CollectionConfig = {
       },
     },
     {
-      name: 'content',
-      type: 'richText',
-      required: true,
-    },
-    {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
@@ -72,14 +67,6 @@ export const Articles: CollectionConfig = {
         date: {
           pickerAppearance: 'dayOnly',
         },
-      },
-    },
-    {
-      name: 'readTime',
-      type: 'number',
-      required: true,
-      admin: {
-        description: 'Tempo de leitura em minutos',
       },
     },
   ],

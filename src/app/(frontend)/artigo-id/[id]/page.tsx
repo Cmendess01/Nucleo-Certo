@@ -4,28 +4,19 @@ import Image from 'next/image';
 import { getPayload } from 'payload';
 import config from '@payload-config';
 
-interface Tag {
-    tag?: string | null;
-    id?: string | null;
-}
-
-interface Media {
-    id: string;
-    url?: string | null;
-    alt?: string | null;
-    filename?: string | null;
-}
-
 interface PostData {
-    id: string;
+    id: string | number;
     title: string;
     slug: string;
     excerpt: string;
     content: string;
-    featuredImage?: string | Media | null;
+    featuredImage?: {
+        url?: string | null;
+        alt?: string | null;
+    } | string | null;
     author: string;
     category: string;
-    tags?: Tag[] | null;
+    tags?: Array<{ tag?: string | null; id?: string | null }> | null;
     readTime: number;
     publishedAt: string;
     status: string;
@@ -33,32 +24,35 @@ interface PostData {
 
 interface ArticlePageProps {
     params: {
-        slug: string;
+        id: string;
     };
 }
 
-async function getPost(slug: string): Promise<PostData | null> {
+async function getPostById(id: string): Promise<PostData | null> {
     try {
         const payload = await getPayload({ config });
 
-        const result = await payload.find({
+        // Converte id para número se for numérico
+        const postId = !isNaN(Number(id)) ? Number(id) : id;
+
+        const post = await payload.findByID({
             collection: 'posts',
-            where: {
-                slug: { equals: slug },
-                status: { equals: 'published' },
-            },
-            limit: 1,
+            id: postId,
         });
 
-        return (result.docs[0] as unknown as PostData) || null;
+        if (!post || post.status !== 'published') {
+            return null;
+        }
+
+        return post as unknown as PostData;
     } catch (error) {
         console.error('Erro ao buscar post:', error);
         return null;
     }
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
-    const post = await getPost(params.slug);
+export default async function ArticleIdPage({ params }: ArticlePageProps) {
+    const post = await getPostById(params.id);
 
     if (!post) {
         notFound();
@@ -123,7 +117,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <article className="max-w-4xl mx-auto px-6 py-16">
                 <div 
                     className="prose prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{ __html: typeof post.content === 'string' ? post.content : JSON.stringify(post.content) }}
+                    dangerouslySetInnerHTML={{ __html: typeof post.content === 'string' ? post.content : '<p>Conteúdo em breve...</p>' }}
                 />
             </article>
 
@@ -132,10 +126,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <div className="max-w-4xl mx-auto px-6 pb-16">
                     <div className="flex flex-wrap gap-2">
                         {post.tags
-                            .filter((tagObj: Tag): tagObj is { tag: string; id?: string | null } => 
+                            .filter((tagObj): tagObj is { tag: string; id?: string | null } => 
                                 tagObj !== null && typeof tagObj === 'object' && typeof tagObj.tag === 'string'
                             )
-                            .map((tagObj: { tag: string; id?: string | null }, index: number) => (
+                            .map((tagObj, index) => (
                                 <span
                                     key={tagObj.id || index}
                                     className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"

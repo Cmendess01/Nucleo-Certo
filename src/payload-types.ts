@@ -208,9 +208,32 @@ export interface Post {
    * Breve descrição do artigo (aparece nos cards)
    */
   excerpt: string;
+  /**
+   * Conteúdo completo do artigo
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   featuredImage: number | Media;
   author: string;
-  category: 'Gestão Estratégica' | 'Qualidade & Acreditação' | 'Finanças' | 'Liderança' | 'Inovação' | 'Setor Público';
+  category:
+    | 'Gestão Estratégica'
+    | 'Qualidade e Acreditação'
+    | 'Gestão Financeira'
+    | 'Gestão de Pessoas'
+    | 'Inovação e Tecnologia';
   publishedAt: string;
   updatedAt: string;
   createdAt: string;
@@ -378,6 +401,7 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   status?: T;
   excerpt?: T;
+  content?: T;
   featuredImage?: T;
   author?: T;
   category?: T;

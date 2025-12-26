@@ -5,7 +5,7 @@ import { Search, Filter, Calendar, Clock, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 interface Post {
-  id: string;
+  id: string | number;
   title: string;
   slug: string;
   excerpt: string;
@@ -33,11 +33,10 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
   const categories = [
     'Todos',
     'Gestão Estratégica',
-    'Qualidade & Acreditação',
-    'Finanças',
-    'Liderança',
-    'Inovação',
-    'Setor Público'
+    'Qualidade e Acreditação',
+    'Gestão Financeira',
+    'Gestão de Pessoas',
+    'Inovação e Tecnologia',
   ];
 
   // Buscar posts do Payload
@@ -70,11 +69,11 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
   });
 
   // Handler para navegação
-  const handleArticleClick = (slug: string) => {
+  const handleArticleClick = (id: string | number) => {
     if (onNavigate) {
-      onNavigate(`/artigo/${slug}`);
+      onNavigate(`/artigo-id/${id}`);
     } else {
-      window.location.href = `/artigo/${slug}`;
+      window.location.href = `/artigo-id/${id}`;
     }
   };
 
@@ -169,7 +168,7 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
               {filteredArticles.map((post) => (
                 <article
                   key={post.id}
-                  onClick={() => handleArticleClick(post.slug)}
+                  onClick={() => handleArticleClick(post.id)}
                   className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
                 >
                   {/* Imagem */}
@@ -203,12 +202,7 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
                         <Calendar className="w-4 h-4" />
                         <span>{new Date(post.publishedAt).toLocaleDateString('pt-BR')}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        <span>{post.readTime} min</span>
-                      </div>
                     </div>
-
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-gray-700">{post.author}</span>
                       <ArrowRight className="w-5 h-5 text-[#C7A25B] group-hover:translate-x-2 transition-transform duration-300" />
