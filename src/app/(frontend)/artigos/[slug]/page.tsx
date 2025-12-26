@@ -52,52 +52,86 @@ function lexicalToHtml(content: unknown): string {
         const processNode = (node: Record<string, unknown>): string => {
             if (!node) return '';
             
-            if (node.type === 'text') {
+            const type = node.type as string;
+            const children = node.children as Record<string, unknown>[] | undefined;
+            
+            // Texto
+            if (type === 'text') {
                 let text = (node.text as string) || '';
-                if (node.format) {
-                    const format = node.format as number;
+                const format = node.format as number | undefined;
+                
+                if (format) {
                     if (format & 1) text = `<strong>${text}</strong>`;
                     if (format & 2) text = `<em>${text}</em>`;
                     if (format & 4) text = `<u>${text}</u>`;
+                    if (format & 8) text = `<s>${text}</s>`;
+                    if (format & 16) text = `<code>${text}</code>`;
                 }
+                
                 return text;
             }
             
-            if (node.type === 'paragraph') {
-                const children = (node.children as Record<string, unknown>[])?.map(processNode).join('') || '';
-                return `<p>${children}</p>`;
+            // Parágrafo
+            if (type === 'paragraph') {
+                const content = children?.map(processNode).join('') || '';
+                return content ? `<p>${content}</p>` : '';
             }
             
-            if (node.type === 'heading') {
-                const level = (node.tag as string) || 'h2';
-                const children = (node.children as Record<string, unknown>[])?.map(processNode).join('') || '';
-                return `<${level}>${children}</${level}>`;
+            // Headings
+            if (type === 'heading') {
+                const tag = (node.tag as string) || 'h2';
+                const content = children?.map(processNode).join('') || '';
+                return `<${tag}>${content}</${tag}>`;
             }
             
-            if (node.type === 'list') {
-                const tag = node.listType === 'number' ? 'ol' : 'ul';
-                const children = (node.children as Record<string, unknown>[])?.map(processNode).join('') || '';
-                return `<${tag}>${children}</${tag}>`;
+            // Listas
+            if (type === 'list') {
+                const listType = node.listType as string;
+                const tag = listType === 'number' ? 'ol' : 'ul';
+                const content = children?.map(processNode).join('') || '';
+                return `<${tag}>${content}</${tag}>`;
             }
             
-            if (node.type === 'listitem') {
-                const children = (node.children as Record<string, unknown>[])?.map(processNode).join('') || '';
-                return `<li>${children}</li>`;
+            if (type === 'listitem') {
+                const content = children?.map(processNode).join('') || '';
+                return `<li>${content}</li>`;
             }
             
-            if (node.type === 'link') {
-                const children = (node.children as Record<string, unknown>[])?.map(processNode).join('') || '';
+            // Links
+            if (type === 'link') {
                 const url = (node.url as string) || '#';
-                return `<a href="${url}" target="_blank" rel="noopener noreferrer">${children}</a>`;
+                const content = children?.map(processNode).join('') || '';
+                const rel = node.rel as string | undefined;
+                const target = node.target as string | undefined;
+                
+                return `<a href="${url}"${target ? ` target="${target}"` : ''}${rel ? ` rel="${rel}"` : ' rel="noopener noreferrer"'}>${content}</a>`;
             }
             
-            if (node.type === 'quote') {
-                const children = (node.children as Record<string, unknown>[])?.map(processNode).join('') || '';
-                return `<blockquote>${children}</blockquote>`;
+            // Quote
+            if (type === 'quote') {
+                const content = children?.map(processNode).join('') || '';
+                return `<blockquote>${content}</blockquote>`;
             }
             
-            if (node.children && Array.isArray(node.children)) {
-                return (node.children as Record<string, unknown>[]).map(processNode).join('');
+            // Code block
+            if (type === 'code') {
+                const content = children?.map(processNode).join('') || '';
+                return `<pre><code>${content}</code></pre>`;
+            }
+            
+            // Line break
+            if (type === 'linebreak') {
+                return '<br>';
+            }
+            
+            // Horizontal rule
+            if (type === 'horizontalrule') {
+                return '<hr>';
+            }
+            
+            // Fallback: processar children se existirem
+            if (children && Array.isArray(children)) {
+                return children.map(processNode).join('');
             }
             
             return '';

@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Search, Filter, Calendar, Clock, ArrowRight } from 'lucide-react';
+import { Search, Filter, Calendar, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Post {
   id: string | number;
@@ -19,17 +20,12 @@ interface Post {
   publishedAt: string;
 }
 
-interface ArticlesPageProps {
-  onNavigate?: (path: string) => void;
-}
-
-export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
+export function ArticlesPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
 
-  // Categorias disponíveis
   const categories = [
     'Todos',
     'Gestão Estratégica',
@@ -39,7 +35,6 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
     'Inovação e Tecnologia',
   ];
 
-  // Buscar posts do Payload
   useEffect(() => {
     async function fetchPosts() {
       try {
@@ -60,30 +55,12 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
     fetchPosts();
   }, []);
 
-  // Filtrar artigos
   const filteredArticles = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'Todos' || post.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  // Handler para navegação
-  const handleArticleClick = (id: string | number) => {
-    if (onNavigate) {
-      onNavigate(`/artigo-id/${id}`);
-    } else {
-      window.location.href = `/artigo-id/${id}`;
-    }
-  };
-
-  const handleContactClick = () => {
-    if (onNavigate) {
-      onNavigate('/contato');
-    } else {
-      window.location.href = '/contato';
-    }
-  };
 
   if (loading) {
     return (
@@ -98,7 +75,6 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
 
   return (
     <div className="bg-white">
-      {/* Hero */}
       <section className="bg-[#0D1B2A] py-20 lg:py-28">
         <div className="max-w-6xl mx-auto px-6 lg:px-8 text-center">
           <h1 className="text-4xl lg:text-6xl font-semibold text-white mb-6">
@@ -110,12 +86,10 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
         </div>
       </section>
 
-      {/* Filtros e Busca */}
       <section className="py-8 lg:py-12 bg-gray-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex flex-col gap-6">
             
-            {/* Busca */}
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -127,7 +101,6 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
               />
             </div>
 
-            {/* Categorias */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Filter className="w-5 h-5 text-gray-600" />
@@ -150,7 +123,6 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
               </div>
             </div>
 
-            {/* Contador de resultados */}
             <div>
               <p className="text-sm lg:text-base text-gray-600">
                 {filteredArticles.length} {filteredArticles.length === 1 ? 'artigo encontrado' : 'artigos encontrados'}
@@ -160,18 +132,16 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
         </div>
       </section>
 
-      {/* Grid de Artigos */}
       <section className="py-12 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {filteredArticles.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {filteredArticles.map((post) => (
-                <article
+                <Link
                   key={post.id}
-                  onClick={() => handleArticleClick(post.id)}
-                  className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
+                  href={`/artigos/${post.slug}`}
+                  className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
                 >
-                  {/* Imagem */}
                   <div className="relative h-56 overflow-hidden">
                     <Image
                       src={post.featuredImage?.url || '/placeholder.jpg'}
@@ -187,7 +157,6 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
                     </div>
                   </div>
 
-                  {/* Conteúdo */}
                   <div className="p-6">
                     <h3 className="text-xl font-bold text-[#0D1B2A] mb-3 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
                       {post.title}
@@ -208,7 +177,7 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
                       <ArrowRight className="w-5 h-5 text-[#C7A25B] group-hover:translate-x-2 transition-transform duration-300" />
                     </div>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           ) : (
@@ -230,7 +199,6 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16 lg:py-20 bg-[#E6D2A8]">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-semibold text-[#0D1B2A] mb-6">
@@ -239,12 +207,12 @@ export function ArticlesPage({ onNavigate }: ArticlesPageProps) {
           <p className="text-lg lg:text-xl text-[#0D1B2A] mb-10 leading-relaxed">
             Entre em contato e fique por dentro das melhores práticas em gestão de saúde
           </p>
-          <button
-            onClick={handleContactClick}
-            className="px-8 py-4 bg-[#0D1B2A] text-white font-semibold rounded-lg hover:bg-[#2E3A45] transition-all"
+          <Link
+            href="/contato"
+            className="inline-block px-8 py-4 bg-[#0D1B2A] text-white font-semibold rounded-lg hover:bg-[#2E3A45] transition-all"
           >
             Fale Conosco
-          </button>
+          </Link>
         </div>
       </section>
     </div>

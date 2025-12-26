@@ -2,6 +2,7 @@
 
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Post {
   id: string;
@@ -20,21 +21,12 @@ interface Post {
 
 interface ArticleCardProps {
   article: Post;
-  onNavigate?: (path: string) => void;
 }
 
-export function ArticleCard({ article, onNavigate }: ArticleCardProps) {
+export function ArticleCard({ article }: ArticleCardProps) {
   if (!article) {
     return null;
   }
-
-  const handleClick = () => {
-    if (onNavigate) {
-      onNavigate(`/artigo/${article.slug}`);
-    } else {
-      window.location.href = `/artigo/${article.slug}`;
-    }
-  };
 
   const imageUrl = typeof article.featuredImage === 'object' && article.featuredImage?.url
     ? article.featuredImage.url
@@ -45,11 +37,10 @@ export function ArticleCard({ article, onNavigate }: ArticleCardProps) {
     : article.title;
 
   return (
-    <article
-      onClick={handleClick}
-      className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
+    <Link
+      href={`/artigos/${article.slug}`}
+      className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
     >
-      {/* Imagem */}
       <div className="relative h-56 overflow-hidden">
         <Image
           src={imageUrl}
@@ -65,7 +56,6 @@ export function ArticleCard({ article, onNavigate }: ArticleCardProps) {
         </div>
       </div>
 
-      {/* Conteúdo */}
       <div className="p-6">
         <h3 className="text-xl font-bold text-[#0D1B2A] mb-3 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
           {article.title}
@@ -91,6 +81,6 @@ export function ArticleCard({ article, onNavigate }: ArticleCardProps) {
           <ArrowRight className="w-5 h-5 text-[#C7A25B] group-hover:translate-x-2 transition-transform duration-300" />
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
