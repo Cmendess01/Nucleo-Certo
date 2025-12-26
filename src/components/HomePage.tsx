@@ -1,5 +1,3 @@
-'use client'
-
 import { 
   Heart, Target, Award, BarChart3, Building2, 
   ClipboardCheck, ArrowRight, MapPin, Calendar, Globe,
@@ -8,11 +6,51 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getMostReadArticles } from '../data/articles';
-import { ArticleCard } from './ArticleCard';
+import { getPayload } from 'payload';
+import config from '@payload-config';
 import { DraggableCarousel } from './DraggableCarousel';
 
-export function HomePage() {
+interface Media {
+  id: string;
+  url?: string | null;
+  alt?: string | null;
+}
+
+interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  featuredImage?: string | Media | null;
+  author: string;
+  category: string;
+  readTime: number;
+  publishedAt: string;
+}
+
+async function getLatestPosts(): Promise<Post[]> {
+  try {
+    const payload = await getPayload({ config });
+
+    const result = await payload.find({
+      collection: 'posts',
+      where: {
+        status: { equals: 'published' },
+      },
+      limit: 4,
+      sort: '-publishedAt',
+    });
+
+    return result.docs as unknown as Post[];
+  } catch (error) {
+    console.error('Erro ao buscar posts:', error);
+    return [];
+  }
+}
+
+export async function HomePage() {
+  const posts = await getLatestPosts();
+
   const stats = [
     { icon: Calendar, value: '15+', label: 'Anos de Excelência' },
     { icon: Building2, value: '3.000+', label: 'Leitos Atendidos' },
@@ -99,11 +137,9 @@ export function HomePage() {
   return (
     <div className="bg-white">
       
-      {/* HERO - FUNDO ESCURO */}
       <section className="bg-[#0D1B2A] py-16 md:py-24 lg:py-32">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Conteúdo à Esquerda */}
             <div className="text-center lg:text-left">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-4 md:mb-6 leading-tight">
                 Transformamos Instituições de Saúde
@@ -127,7 +163,6 @@ export function HomePage() {
               </div>
             </div>
             
-            {/* Logo à Direita */}
             <div className="flex justify-center lg:justify-end order-first lg:order-last">
               <Image
                 src="/assets/logo-hero.png"
@@ -141,98 +176,95 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* STATS - FUNDO CINZA CLARO */}
-        <section className="py-12 md:py-20 bg-gray-50">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
-              {stats.map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
-                  <div 
-                    key={index}
-                    className="bg-white border border-gray-200 rounded-lg p-6 md:p-8 hover:border-[#C7A25B] transition-all text-center shadow-sm"
-                  >
-                    <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-4 mx-auto">
-                      <IconComponent className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
-                    </div>
-                    <div className="text-3xl md:text-4xl font-semibold text-[#0D1B2A] mb-2">
-                      {stat.value}
-                    </div>
-                    <div className="text-sm md:text-base text-[#4A4A4A]">
-                      {stat.label}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-      {/* ABOUT - FUNDO BRANCO */}
-        <section className="py-20 bg-white">
-          <div className="max-w-6xl mx-auto px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#C7A25B]/10 mb-6">
-                  <span className="text-sm font-semibold uppercase tracking-wide text-[#0D1B2A]">Quem Somos</span>
-                </div>
-                <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-6 leading-tight">
-                  Pioneiros em Gestão Holística em Saúde
-                </h2>
-                <p className="text-lg text-[#4A4A4A] mb-6 leading-relaxed">
-                  Há 15 anos transformamos instituições de saúde através de uma abordagem holística que integra gestão estratégica, qualidade, finanças e humanização.
-                </p>
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
-                    <p className="text-[#4A4A4A]">Primeira consultoria ONA de Goiás</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
-                    <p className="text-[#4A4A4A]">Metodologias proprietárias registradas</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
-                    <p className="text-[#4A4A4A]">Atuação nacional e internacional</p>
-                  </div>
-                </div>
-                <Link
-                  href="/quem-somos"
-                  className="inline-flex items-center gap-2 text-[#0D1B2A] font-semibold hover:text-[#2E3A45] transition-colors"
+      <section className="py-12 md:py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
+            {stats.map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <div 
+                  key={index}
+                  className="bg-white border border-gray-200 rounded-lg p-6 md:p-8 hover:border-[#C7A25B] transition-all text-center shadow-sm"
                 >
-                  Conheça Nossa História
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
+                  <div className="w-12 h-12 rounded-lg bg-[#C7A25B]/10 flex items-center justify-center mb-4 mx-auto">
+                    <IconComponent className="w-6 h-6 text-[#C7A25B]" strokeWidth={2} />
+                  </div>
+                  <div className="text-3xl md:text-4xl font-semibold text-[#0D1B2A] mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm md:text-base text-[#4A4A4A]">
+                    {stat.label}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#C7A25B]/10 mb-6">
+                <span className="text-sm font-semibold uppercase tracking-wide text-[#0D1B2A]">Quem Somos</span>
               </div>
-              <div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
-                    <Heart className="w-8 h-8 text-[#C7A25B] mb-3" />
-                    <h4 className="font-medium text-[#0D1B2A] mb-2">Humanização</h4>
-                    <p className="text-sm text-[#4A4A4A]">Cuidado centrado no paciente</p>
-                  </div>
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
-                    <Target className="w-8 h-8 text-[#C7A25B] mb-3" />
-                    <h4 className="font-medium text-[#0D1B2A] mb-2">Estratégia</h4>
-                    <p className="text-sm text-[#4A4A4A]">Visão de longo prazo</p>
-                  </div>
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
-                    <BarChart3 className="w-8 h-8 text-[#C7A25B] mb-3" />
-                    <h4 className="font-medium text-[#0D1B2A] mb-2">Dados</h4>
-                    <p className="text-sm text-[#4A4A4A]">Decisões inteligentes</p>
-                  </div>
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
-                    <Award className="w-8 h-8 text-[#C7A25B] mb-3" />
-                    <h4 className="font-medium text-[#0D1B2A] mb-2">Excelência</h4>
-                    <p className="text-sm text-[#4A4A4A]">Padrões internacionais</p>
-                  </div>
+              <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-6 leading-tight">
+                Pioneiros em Gestão Holística em Saúde
+              </h2>
+              <p className="text-lg text-[#4A4A4A] mb-6 leading-relaxed">
+                Há 15 anos transformamos instituições de saúde através de uma abordagem holística que integra gestão estratégica, qualidade, finanças e humanização.
+              </p>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
+                  <p className="text-[#4A4A4A]">Primeira consultoria ONA de Goiás</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
+                  <p className="text-[#4A4A4A]">Metodologias proprietárias registradas</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#C7A25B] flex-shrink-0 mt-1" />
+                  <p className="text-[#4A4A4A]">Atuação nacional e internacional</p>
+                </div>
+              </div>
+              <Link
+                href="/quem-somos"
+                className="inline-flex items-center gap-2 text-[#0D1B2A] font-semibold hover:text-[#2E3A45] transition-colors"
+              >
+                Conheça Nossa História
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+            <div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
+                  <Heart className="w-8 h-8 text-[#C7A25B] mb-3" />
+                  <h4 className="font-medium text-[#0D1B2A] mb-2">Humanização</h4>
+                  <p className="text-sm text-[#4A4A4A]">Cuidado centrado no paciente</p>
+                </div>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
+                  <Target className="w-8 h-8 text-[#C7A25B] mb-3" />
+                  <h4 className="font-medium text-[#0D1B2A] mb-2">Estratégia</h4>
+                  <p className="text-sm text-[#4A4A4A]">Visão de longo prazo</p>
+                </div>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
+                  <BarChart3 className="w-8 h-8 text-[#C7A25B] mb-3" />
+                  <h4 className="font-medium text-[#0D1B2A] mb-2">Dados</h4>
+                  <p className="text-sm text-[#4A4A4A]">Decisões inteligentes</p>
+                </div>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 hover:border-[#C7A25B] hover:shadow-md transition-all">
+                  <Award className="w-8 h-8 text-[#C7A25B] mb-3" />
+                  <h4 className="font-medium text-[#0D1B2A] mb-2">Excelência</h4>
+                  <p className="text-sm text-[#4A4A4A]">Padrões internacionais</p>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-      {/* PILLARS - FUNDO CINZA CLARO */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -271,7 +303,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* METHODOLOGIES - FUNDO ESCURO */}
       <section className="bg-[#0D1B2A] py-20">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -322,7 +353,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* DIFFERENTIALS - FUNDO CLARO */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -361,7 +391,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* CEO - FUNDO CLARO */}
       <section className="py-12 md:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -414,7 +443,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* CLIENTES E PARCEIROS - FUNDO CINZA */}
       <section className="py-20 bg-gray-50 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -429,10 +457,8 @@ export function HomePage() {
             </p>
           </div>
 
-          {/* Carrossel Infinito */}
           <DraggableCarousel autoScroll={true} speed={1}>
             <div className="flex gap-6 px-3">
-              {/* Primeiro conjunto de clientes */}
               {[
                 'CDI Premium',
                 'Instituto Genesis',
@@ -470,7 +496,6 @@ export function HomePage() {
                 </div>
               ))}
               
-              {/* Segundo conjunto (duplicado para loop infinito) */}
               {[
                 'CDI Premium',
                 'Instituto Genesis',
@@ -510,7 +535,6 @@ export function HomePage() {
             </div>
           </DraggableCarousel>
 
-          {/* CTA */}
           <div className="text-center mt-12">
             <Link
               href="/resultados"
@@ -523,7 +547,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ARTIGOS MAIS LIDOS - FUNDO CLARO */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -539,12 +562,50 @@ export function HomePage() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {getMostReadArticles(4).map((article) => (
-              <ArticleCard
-                key={article.id}
-                article={article}
-              />
-            ))}
+            {posts.map((post) => {
+              const imageUrl = typeof post.featuredImage === 'object' && post.featuredImage !== null && 'url' in post.featuredImage
+                ? post.featuredImage.url || '/placeholder.jpg'
+                : '/placeholder.jpg';
+
+              const imageAlt = typeof post.featuredImage === 'object' && post.featuredImage !== null && 'alt' in post.featuredImage
+                ? post.featuredImage.alt || post.title
+                : post.title;
+
+              return (
+                <Link
+                  key={post.id}
+                  href={`/artigos/${post.slug}`}
+                  className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-[#C7A25B] hover:shadow-lg transition-all"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <Image
+                      src={imageUrl}
+                      alt={imageAlt}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 bg-[#C7A25B] text-white text-xs font-semibold rounded-full">
+                        {post.category}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-[#0D1B2A] mb-2 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      {post.excerpt}
+                    </p>
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span>{post.author}</span>
+                      <span>{post.readTime} min</span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="text-center mt-12">
@@ -558,7 +619,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* CTA FINAL - FUNDO DOURADO */}
       <section className="py-20 bg-[#E6D2A8]">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-6">

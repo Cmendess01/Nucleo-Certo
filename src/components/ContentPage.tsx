@@ -6,20 +6,111 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { articles } from '../data/articles';
-import { ArticleCard } from './ArticleCard';
+
+interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  category: string;
+  author: string;
+  readTime: number;
+  publishedAt: string;
+  featuredImage?: {
+    url?: string;
+    alt?: string;
+  };
+}
+
+// Mock de artigos para exemplo
+const mockArticles: Article[] = [
+  {
+    id: '1',
+    slug: 'gestao-estrategica-saude',
+    title: 'Gestão Estratégica em Saúde: O Caminho para a Excelência',
+    excerpt: 'Descubra como implementar uma gestão estratégica eficaz em sua instituição de saúde.',
+    category: 'Gestão Estratégica',
+    author: 'Igor Bezerra',
+    readTime: 8,
+    publishedAt: new Date().toISOString(),
+    featuredImage: {
+      url: '/placeholder.jpg',
+      alt: 'Gestão Estratégica',
+    },
+  },
+  {
+    id: '2',
+    slug: 'acreditacao-ona',
+    title: 'Acreditação ONA: Guia Completo',
+    excerpt: 'Tudo o que você precisa saber para conquistar a acreditação ONA.',
+    category: 'Qualidade',
+    author: 'Igor Bezerra',
+    readTime: 12,
+    publishedAt: new Date().toISOString(),
+    featuredImage: {
+      url: '/placeholder.jpg',
+      alt: 'Acreditação ONA',
+    },
+  },
+  {
+    id: '3',
+    slug: 'governanca-clinica',
+    title: 'Governança Clínica: Princípios e Práticas',
+    excerpt: 'Como implementar uma governança clínica eficaz.',
+    category: 'Gestão',
+    author: 'Igor Bezerra',
+    readTime: 10,
+    publishedAt: new Date().toISOString(),
+    featuredImage: {
+      url: '/placeholder.jpg',
+      alt: 'Governança Clínica',
+    },
+  },
+  {
+    id: '4',
+    slug: 'gestao-financeira',
+    title: 'Gestão Financeira Hospitalar',
+    excerpt: 'Estratégias práticas para otimizar a gestão financeira.',
+    category: 'Finanças',
+    author: 'Igor Bezerra',
+    readTime: 15,
+    publishedAt: new Date().toISOString(),
+    featuredImage: {
+      url: '/placeholder.jpg',
+      alt: 'Gestão Financeira',
+    },
+  },
+  {
+    id: '5',
+    slug: 'qualidade-assistencial',
+    title: 'Qualidade Assistencial em Foco',
+    excerpt: 'Melhores práticas para garantir qualidade no atendimento.',
+    category: 'Qualidade',
+    author: 'Igor Bezerra',
+    readTime: 9,
+    publishedAt: new Date().toISOString(),
+    featuredImage: {
+      url: '/placeholder.jpg',
+      alt: 'Qualidade Assistencial',
+    },
+  },
+  {
+    id: '6',
+    slug: 'inovacao-saude',
+    title: 'Inovação na Gestão de Saúde',
+    excerpt: 'Como a inovação está transformando a gestão hospitalar.',
+    category: 'Inovação',
+    author: 'Igor Bezerra',
+    readTime: 11,
+    publishedAt: new Date().toISOString(),
+    featuredImage: {
+      url: '/placeholder.jpg',
+      alt: 'Inovação em Saúde',
+    },
+  },
+];
 
 export function ContentPage() {
-  const featured = {
-    type: 'Livro',
-    icon: BookOpen,
-    title: 'O Guardião da Saúde',
-    subtitle: 'O gestor de alta performance em organizações de saúde',
-    author: 'Igor Bezerra',
-    description: 'Obra completa sobre gestão estratégica em saúde, abordando liderança, governança, qualidade e humanização no setor.',
-    publisher: 'Editora Contato Comunicação',
-  };
-
   const categories = [
     { icon: FileText, title: 'Artigos', count: '25+' },
     { icon: Video, title: 'Vídeos', count: '15+' },
@@ -30,7 +121,6 @@ export function ContentPage() {
   return (
     <div className="bg-white">
       
-      {/* HERO */}
       <section className="bg-[#0D1B2A] py-24 lg:py-32">
         <div className="max-w-6xl mx-auto px-6 lg:px-8 text-center">
           <h1 className="text-5xl lg:text-6xl font-semibold text-white mb-6">
@@ -42,12 +132,10 @@ export function ContentPage() {
         </div>
       </section>
 
-      {/* FEATURED - BOOK */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-12">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Imagem do Livro */}
               <div className="flex justify-center">
                 <div className="relative w-80 h-[480px]">
                   <Image
@@ -60,7 +148,6 @@ export function ContentPage() {
                 </div>
               </div>
 
-              {/* Conteúdo */}
               <div>
                 <div className="w-12 h-12 rounded-lg bg-[#C7A25B] flex items-center justify-center mb-6">
                   <BookOpen className="w-6 h-6 text-white" strokeWidth={2} />
@@ -97,7 +184,6 @@ export function ContentPage() {
         </div>
       </section>
 
-      {/* CATEGORIES */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -133,7 +219,6 @@ export function ContentPage() {
         </div>
       </section>
 
-      {/* ARTIGOS */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -149,11 +234,39 @@ export function ContentPage() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.slice(0, 6).map((article) => (
-              <ArticleCard
+            {mockArticles.map((article) => (
+              <Link
                 key={article.id}
-                article={article}
-              />
+                href={`/artigos/${article.slug}`}
+                className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-[#C7A25B] hover:shadow-lg transition-all"
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <Image
+                    src={article.featuredImage?.url || '/placeholder.jpg'}
+                    alt={article.featuredImage?.alt || article.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-[#C7A25B] text-white text-xs font-semibold rounded-full">
+                      {article.category}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
+                    {article.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                    {article.excerpt}
+                  </p>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span>{article.author}</span>
+                    <span>{article.readTime} min</span>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
 
@@ -168,7 +281,6 @@ export function ContentPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-20 bg-[#E6D2A8]">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-semibold text-[#0D1B2A] mb-6">

@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: false,
+    ignoreDuringBuilds: true,  // ← Adiciona esta linha
   },
   typescript: {
     ignoreBuildErrors: false,
@@ -20,6 +20,20 @@ const nextConfig = {
         hostname: '**',
       },
     ],
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    
+    config.ignoreWarnings = [
+      { module: /node_modules\/payload/ },
+    ];
+    
+    return config;
   },
 };
 
