@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { getPayload } from 'payload';
 import config from '@payload-config';
 import { Calendar, User, ArrowLeft, Share2 } from 'lucide-react';
+import { DefaultTypedEditorState } from '@payloadcms/richtext-lexical';
+import RichText from '@/components/RichText';
 
 interface Tag {
     tag?: string | null;
@@ -22,7 +24,7 @@ interface PostData {
     title: string;
     slug: string;
     excerpt: string;
-    content: unknown;
+    content: DefaultTypedEditorState;
     featuredImage?: string | Media | null;
     author: string;
     category: string;
@@ -36,167 +38,6 @@ interface ArticlePageProps {
     params: Promise<{
         slug: string;
     }>;
-}
-
-function processContent(content: unknown): string {
-    if (!content) return '<p>Conteúdo não disponível.</p>';
-    
-    // Se for string (Markdown), converte para HTML
-    if (typeof content === 'string') {
-        let html = content;
-        
-        // Headers
-        html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-        html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-        html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-        
-        // Bold
-        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        // Italic
-        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        
-        // Links
-        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-        
-        // Blockquotes
-        html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
-        
-        // Unordered lists - processa linha por linha
-        const lines = html.split('\n');
-        let inList = false;
-        const processedLines: string[] = [];
-        
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            
-            if (line.match(/^- /)) {
-                if (!inList) {
-                    processedLines.push('<ul>');
-                    inList = true;
-                }
-                processedLines.push(`<li>${line.replace(/^- /, '')}</li>`);
-            } else if (line.match(/^\d+\. /)) {
-                if (!inList) {
-                    processedLines.push('<ol>');
-                    inList = true;
-                }
-                processedLines.push(`<li>${line.replace(/^\d+\. /, '')}</li>`);
-            } else {
-                if (inList) {
-                    const prevLine = processedLines[processedLines.length - 1];
-                    if (prevLine && prevLine.includes('<ul>')) {
-                        processedLines.push('</ul>');
-                    } else if (prevLine && prevLine.includes('<ol>')) {
-                        processedLines.push('</ol>');
-                    }
-                    inList = false;
-                }
-                processedLines.push(line);
-            }
-        }
-        
-        if (inList) {
-            processedLines.push('</ul>');
-        }
-        
-        html = processedLines.join('\n');
-        
-        // Paragraphs - processa blocos separados por linha dupla
-        html = html.split('\n\n').map(block => {
-            const trimmed = block.trim();
-            if (!trimmed) return '';
-            if (trimmed.startsWith('<')) return trimmed;
-            return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
-        }).join('\n');
-        
-        return html;
-    }
-    
-    // Se for objeto Lexical, processa normalmente
-    try {
-        const root = (content as Record<string, unknown>).root || content;
-        
-        if (!root || typeof root !== 'object' || !('children' in root)) {
-            return '<p>Conteúdo em formato inválido.</p>';
-        }
-        
-        const processNode = (node: Record<string, unknown>): string => {
-            if (!node) return '';
-            
-            const type = node.type as string;
-            const children = node.children as Record<string, unknown>[] | undefined;
-            
-            if (type === 'text') {
-                let text = (node.text as string) || '';
-                const format = node.format as number | undefined;
-                
-                if (format) {
-                    if (format & 1) text = `<strong>${text}</strong>`;
-                    if (format & 2) text = `<em>${text}</em>`;
-                    if (format & 4) text = `<u>${text}</u>`;
-                    if (format & 8) text = `<s>${text}</s>`;
-                    if (format & 16) text = `<code>${text}</code>`;
-                }
-                
-                return text;
-            }
-            
-            if (type === 'paragraph') {
-                const content = children?.map(processNode).join('') || '';
-                return content ? `<p>${content}</p>` : '';
-            }
-            
-            if (type === 'heading') {
-                const tag = (node.tag as string) || 'h2';
-                const content = children?.map(processNode).join('') || '';
-                return `<${tag}>${content}</${tag}>`;
-            }
-            
-            if (type === 'list') {
-                const listType = node.listType as string;
-                const tag = listType === 'number' ? 'ol' : 'ul';
-                const content = children?.map(processNode).join('') || '';
-                return `<${tag}>${content}</${tag}>`;
-            }
-            
-            if (type === 'listitem') {
-                const content = children?.map(processNode).join('') || '';
-                return `<li>${content}</li>`;
-            }
-            
-            if (type === 'link') {
-                const url = (node.url as string) || '#';
-                const content = children?.map(processNode).join('') || '';
-                return `<a href="${url}" target="_blank" rel="noopener noreferrer">${content}</a>`;
-            }
-            
-            if (type === 'quote') {
-                const content = children?.map(processNode).join('') || '';
-                return `<blockquote>${content}</blockquote>`;
-            }
-            
-            if (type === 'code') {
-                const content = children?.map(processNode).join('') || '';
-                return `<pre><code>${content}</code></pre>`;
-            }
-            
-            if (type === 'linebreak') {
-                return '<br>';
-            }
-            
-            if (children && Array.isArray(children)) {
-                return children.map(processNode).join('');
-            }
-            
-            return '';
-        };
-        
-        return ((root as Record<string, unknown>).children as Record<string, unknown>[]).map(processNode).join('');
-    } catch (error) {
-        console.error('Erro ao processar conteúdo:', error);
-        return '<p>Erro ao carregar conteúdo.</p>';
-    }
 }
 
 async function getPost(slug: string): Promise<PostData | null> {
@@ -258,8 +99,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         ? post.featuredImage.alt || post.title
         : post.title;
 
-    const htmlContent = processContent(post.content);
-
     return (
         <div className="bg-white">
             {/* Hero com Imagem */}
@@ -275,7 +114,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 
                 <div className="absolute inset-0 flex items-end">
                     <div className="max-w-4xl mx-auto px-6 lg:px-8 pb-16 w-full">
-                        {/* Breadcrumb */}
                         <Link
                             href="/artigos"
                             className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
@@ -284,19 +122,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                             Voltar para Artigos
                         </Link>
 
-                        {/* Categoria */}
                         <div className="mb-4">
                             <span className="px-4 py-1.5 bg-[#C7A25B] text-white text-sm font-medium rounded-full">
                                 {post.category}
                             </span>
                         </div>
 
-                        {/* Título */}
                         <h1 className="text-4xl lg:text-5xl font-semibold text-white mb-6">
                             {post.title}
                         </h1>
 
-                        {/* Meta Info */}
                         <div className="flex flex-wrap items-center gap-6 text-white/90">
                             <div className="flex items-center gap-2">
                                 <User className="w-5 h-5" />
@@ -315,20 +150,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <section className="py-20 bg-white">
                 <div className="max-w-4xl mx-auto px-6 lg:px-8">
                     
-                    {/* Excerpt */}
                     <div className="mb-12 pb-8 border-b border-gray-200">
                         <p className="text-xl text-gray-700 leading-relaxed">
                             {post.excerpt}
                         </p>
                     </div>
 
-                    {/* Conteúdo HTML */}
-                    <div 
+                    <RichText 
+                        data={post.content}
                         className="prose prose-lg max-w-none prose-headings:text-[#0D1B2A] prose-p:text-gray-700 prose-a:text-[#C7A25B] prose-strong:text-[#0D1B2A] prose-ul:text-gray-700 prose-ol:text-gray-700 prose-li:text-gray-700 prose-blockquote:border-l-[#C7A25B] prose-blockquote:text-gray-600"
-                        dangerouslySetInnerHTML={{ __html: htmlContent }}
                     />
 
-                    {/* Compartilhar */}
                     <div className="mt-12 pt-8 border-t border-gray-200">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div className="flex items-center gap-2 text-gray-600">
