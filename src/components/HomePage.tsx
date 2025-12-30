@@ -572,39 +572,48 @@ export async function HomePage() {
                 : post.title;
 
               return (
-                <Link
-                  key={post.id}
-                  href={`/artigos/${post.slug}`}
-                  className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-[#C7A25B] hover:shadow-lg transition-all"
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={imageUrl}
-                      alt={imageAlt}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-[#C7A25B] text-white text-xs font-semibold rounded-full">
-                        {post.category}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-[#0D1B2A] mb-2 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>{post.author}</span>
-                      <span>{post.readTime} min</span>
-                    </div>
-                  </div>
-                </Link>
-              );
+  <Link
+    key={post.id}
+    href={`/artigos/${post.slug}`}
+    className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-[#C7A25B] hover:shadow-lg transition-all"
+  >
+    <div className="relative h-48 overflow-hidden">
+      <Image
+        src={imageUrl}
+        alt={imageAlt}
+        fill
+        className="object-cover group-hover:scale-110 transition-transform duration-500"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+      />
+      <div className="absolute top-4 left-4">
+        <span className="px-3 py-1 bg-[#C7A25B] text-white text-xs font-semibold rounded-full">
+          {post.category}
+        </span>
+      </div>
+    </div>
+    <div className="p-6">
+      <h3 className="text-lg font-bold text-[#0D1B2A] mb-2 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
+        {post.title}
+      </h3>
+      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+        {post.excerpt}
+      </p>
+      <div className="flex items-center justify-between text-xs text-gray-500 mb-4 pb-4 border-b border-gray-100">
+        <div className="flex items-center gap-2">
+          <Calendar className="w-4 h-4" />
+          <span>{new Date(post.publishedAt).toLocaleDateString('pt-BR')}</span>
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-gray-700">Por {post.author}</span>
+        <div className="flex items-center gap-2 text-[#C7A25B] group-hover:gap-3 transition-all duration-300">
+          <span className="text-sm font-medium">Leia mais</span>
+          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+        </div>
+      </div>
+    </div>
+  </Link>
+);
             })}
           </div>
 

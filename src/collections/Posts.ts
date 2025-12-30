@@ -88,11 +88,12 @@ export const Posts: CollectionConfig = {
       name: 'publishedAt',
       type: 'date',
       required: true,
-      defaultValue: () => new Date().toISOString().split('T')[0],
+      defaultValue: () => new Date().toISOString(),
       label: 'Data de Publicação',
       admin: {
         date: {
           pickerAppearance: 'dayOnly',
+          displayFormat: 'dd/MM/yyyy',
         },
       },
     },

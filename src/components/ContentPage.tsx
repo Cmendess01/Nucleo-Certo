@@ -1,8 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react';
 import { 
   BookOpen, FileText, Video, Headphones, 
-  User, ArrowRight, Download
+  User, ArrowRight, Download, Calendar
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -22,101 +23,33 @@ interface Article {
   };
 }
 
-// Mock de artigos para exemplo
-const mockArticles: Article[] = [
-  {
-    id: '1',
-    slug: 'gestao-estrategica-saude',
-    title: 'Gestão Estratégica em Saúde: O Caminho para a Excelência',
-    excerpt: 'Descubra como implementar uma gestão estratégica eficaz em sua instituição de saúde.',
-    category: 'Gestão Estratégica',
-    author: 'Igor Bezerra',
-    readTime: 8,
-    publishedAt: new Date().toISOString(),
-    featuredImage: {
-      url: '/placeholder.jpg',
-      alt: 'Gestão Estratégica',
-    },
-  },
-  {
-    id: '2',
-    slug: 'acreditacao-ona',
-    title: 'Acreditação ONA: Guia Completo',
-    excerpt: 'Tudo o que você precisa saber para conquistar a acreditação ONA.',
-    category: 'Qualidade',
-    author: 'Igor Bezerra',
-    readTime: 12,
-    publishedAt: new Date().toISOString(),
-    featuredImage: {
-      url: '/placeholder.jpg',
-      alt: 'Acreditação ONA',
-    },
-  },
-  {
-    id: '3',
-    slug: 'governanca-clinica',
-    title: 'Governança Clínica: Princípios e Práticas',
-    excerpt: 'Como implementar uma governança clínica eficaz.',
-    category: 'Gestão',
-    author: 'Igor Bezerra',
-    readTime: 10,
-    publishedAt: new Date().toISOString(),
-    featuredImage: {
-      url: '/placeholder.jpg',
-      alt: 'Governança Clínica',
-    },
-  },
-  {
-    id: '4',
-    slug: 'gestao-financeira',
-    title: 'Gestão Financeira Hospitalar',
-    excerpt: 'Estratégias práticas para otimizar a gestão financeira.',
-    category: 'Finanças',
-    author: 'Igor Bezerra',
-    readTime: 15,
-    publishedAt: new Date().toISOString(),
-    featuredImage: {
-      url: '/placeholder.jpg',
-      alt: 'Gestão Financeira',
-    },
-  },
-  {
-    id: '5',
-    slug: 'qualidade-assistencial',
-    title: 'Qualidade Assistencial em Foco',
-    excerpt: 'Melhores práticas para garantir qualidade no atendimento.',
-    category: 'Qualidade',
-    author: 'Igor Bezerra',
-    readTime: 9,
-    publishedAt: new Date().toISOString(),
-    featuredImage: {
-      url: '/placeholder.jpg',
-      alt: 'Qualidade Assistencial',
-    },
-  },
-  {
-    id: '6',
-    slug: 'inovacao-saude',
-    title: 'Inovação na Gestão de Saúde',
-    excerpt: 'Como a inovação está transformando a gestão hospitalar.',
-    category: 'Inovação',
-    author: 'Igor Bezerra',
-    readTime: 11,
-    publishedAt: new Date().toISOString(),
-    featuredImage: {
-      url: '/placeholder.jpg',
-      alt: 'Inovação em Saúde',
-    },
-  },
-];
-
 export function ContentPage() {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const categories = [
     { icon: FileText, title: 'Artigos', count: '25+' },
     { icon: Video, title: 'Vídeos', count: '15+' },
     { icon: Headphones, title: 'Podcasts', count: '10+' },
     { icon: Download, title: 'E-books', count: '8+' },
   ];
+
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/posts/list?limit=6');
+        const data = await response.json();
+        setArticles(data.docs || []);
+        setLoading(false);
+      } catch (error) {
+        console.error('Erro ao carregar artigos:', error);
+        setLoading(false);
+      }
+    }
+
+    fetchArticles();
+  }, []);
 
   return (
     <div className="bg-white">
@@ -233,42 +166,69 @@ export function ContentPage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {mockArticles.map((article) => (
-              <Link
-                key={article.id}
-                href={`/artigos/${article.slug}`}
-                className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-[#C7A25B] hover:shadow-lg transition-all"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={article.featuredImage?.url || '/placeholder.jpg'}
-                    alt={article.featuredImage?.alt || article.title}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-[#C7A25B] text-white text-xs font-semibold rounded-full">
-                      {article.category}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-[#0D1B2A] mb-2 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
-                    {article.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span>{article.author}</span>
-                    <span>{article.readTime} min</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#C7A25B] mx-auto"></div>
+              <p className="mt-4 text-gray-600">Carregando artigos...</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {articles.map((article) => {
+                const imageUrl = typeof article.featuredImage === 'object' && article.featuredImage?.url
+                  ? article.featuredImage.url
+                  : '/api/media/file/image.png';
+
+                const imageAlt = typeof article.featuredImage === 'object' && article.featuredImage?.alt
+                  ? article.featuredImage.alt
+                  : article.title;
+
+                return (
+                  <Link
+                    key={article.id}
+                    href={`/artigos/${article.slug}`}
+                    className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-[#C7A25B] hover:shadow-lg transition-all"
+                  >
+                    <div className="relative h-48 overflow-hidden bg-gray-100">
+                      <Image
+                        src={imageUrl}
+                        alt={imageAlt}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        unoptimized
+                      />
+                      <div className="absolute top-4 left-4">
+                        <span className="px-3 py-1 bg-[#C7A25B] text-white text-xs font-semibold rounded-full">
+                          {article.category}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-lg font-bold text-[#0D1B2A] mb-2 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
+                        {article.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                        {article.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-4 pb-4 border-b border-gray-100">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4" />
+                          <span>{new Date(article.publishedAt).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-700">Por {article.author}</span>
+                        <div className="flex items-center gap-2 text-[#C7A25B] group-hover:gap-3 transition-all duration-300">
+                          <span className="text-sm font-medium">Leia mais</span>
+                          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <Link

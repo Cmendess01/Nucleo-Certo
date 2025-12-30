@@ -70,15 +70,14 @@ export function ArticleCard({ article }: ArticleCardProps) {
             <Calendar className="w-4 h-4" />
             <span>{new Date(article.publishedAt).toLocaleDateString('pt-BR')}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4" />
-            <span>{article.readTime} min</span>
-          </div>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">{article.author}</span>
-          <ArrowRight className="w-5 h-5 text-[#C7A25B] group-hover:translate-x-2 transition-transform duration-300" />
+          <span className="text-sm font-medium text-gray-700">Por {article.author}</span>
+          <div className="flex items-center gap-2 text-[#C7A25B] group-hover:gap-3 transition-all duration-300">
+            <span className="text-sm font-medium">Leia mais</span>
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+          </div>
         </div>
       </div>
     </Link>
