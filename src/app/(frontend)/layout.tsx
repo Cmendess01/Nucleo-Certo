@@ -14,6 +14,11 @@ const inter = Inter({
 export const metadata = {
   title: 'Núcleo Core - Excelência em Gestão Hospitalar',
   description: 'Núcleo Core - Transformando a gestão hospitalar no Brasil',
+  icons: {
+    icon: '/assets/favicon.png',
+    shortcut: '/assets/favicon.png',
+    apple: '/assets/favicon.png',
+  },
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
