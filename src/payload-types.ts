@@ -209,7 +209,7 @@ export interface Post {
    */
   excerpt: string;
   /**
-   * Conteúdo completo do artigo
+   * Conteúdo completo do artigo. Use o botão HTML (<>) para colar código HTML.
    */
   content: {
     root: {

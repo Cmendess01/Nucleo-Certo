@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload';
+import { lexicalEditor, HTMLConverterFeature } from '@payloadcms/richtext-lexical';
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -54,8 +55,14 @@ export const Posts: CollectionConfig = {
       required: true,
       label: 'Conteúdo',
       admin: {
-        description: 'Conteúdo completo do artigo',
+        description: 'Conteúdo completo do artigo. Use o botão HTML (<>) para colar código HTML.',
       },
+      editor: lexicalEditor({
+        features: ({ defaultFeatures }) => [
+          ...defaultFeatures,
+          HTMLConverterFeature({}),
+        ],
+      }),
     },
     {
       name: 'featuredImage',

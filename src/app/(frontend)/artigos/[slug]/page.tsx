@@ -3,9 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getPayload } from 'payload';
 import config from '@payload-config';
-import { Calendar, User, ArrowLeft, Share2 } from 'lucide-react';
-import { DefaultTypedEditorState } from '@payloadcms/richtext-lexical';
-import RichText from '@/components/RichText';
+import { Calendar, User, ArrowLeft, Share2, ArrowRight } from 'lucide-react';
 
 interface Tag {
     tag?: string | null;
@@ -24,7 +22,7 @@ interface PostData {
     title: string;
     slug: string;
     excerpt: string;
-    content: DefaultTypedEditorState;
+    content: unknown;
     featuredImage?: string | Media | null;
     author: string;
     category: string;
@@ -81,6 +79,121 @@ async function getRelatedPosts(category: string, currentSlug: string): Promise<P
     }
 }
 
+function lexicalToHtml(content: unknown): string {
+    if (!content) return '<p>Conteúdo não disponível.</p>';
+    
+    // Se já for string HTML, retorna direto
+    if (typeof content === 'string') {
+        return content;
+    }
+    
+    try {
+        const root = (content as Record<string, unknown>).root || content;
+        
+        if (!root || typeof root !== 'object' || !('children' in root)) {
+            return '<p>Conteúdo em formato inválido.</p>';
+        }
+        
+        const processNode = (node: Record<string, unknown>): string => {
+            if (!node) return '';
+            
+            const type = node.type as string;
+            const children = node.children as Record<string, unknown>[] | undefined;
+            
+            // HTML direto
+            if (type === 'html') {
+                return (node.html as string) || '';
+            }
+            
+            // Texto
+            if (type === 'text') {
+                let text = (node.text as string) || '';
+                const format = node.format as number | undefined;
+                
+                if (format) {
+                    if (format & 1) text = `<strong>${text}</strong>`;
+                    if (format & 2) text = `<em>${text}</em>`;
+                    if (format & 4) text = `<u>${text}</u>`;
+                    if (format & 8) text = `<s>${text}</s>`;
+                    if (format & 16) text = `<code>${text}</code>`;
+                }
+                
+                return text;
+            }
+            
+            // Parágrafo
+            if (type === 'paragraph') {
+                const content = children?.map(processNode).join('') || '';
+                return content ? `<p>${content}</p>` : '';
+            }
+            
+            // Headings
+            if (type === 'heading') {
+                const tag = (node.tag as string) || 'h2';
+                const content = children?.map(processNode).join('') || '';
+                return `<${tag}>${content}</${tag}>`;
+            }
+            
+            // Listas
+            if (type === 'list') {
+                const listType = node.listType as string;
+                const tag = listType === 'number' ? 'ol' : 'ul';
+                const content = children?.map(processNode).join('') || '';
+                return `<${tag}>${content}</${tag}>`;
+            }
+            
+            if (type === 'listitem') {
+                const content = children?.map(processNode).join('') || '';
+                return `<li>${content}</li>`;
+            }
+            
+            // Links
+            if (type === 'link') {
+                const url = (node.url as string) || '#';
+                const content = children?.map(processNode).join('') || '';
+                const rel = node.rel as string | undefined;
+                const target = node.target as string | undefined;
+                
+                return `<a href="${url}"${target ? ` target="${target}"` : ''}${rel ? ` rel="${rel}"` : ' rel="noopener noreferrer"'}>${content}</a>`;
+            }
+            
+            // Quote
+            if (type === 'quote') {
+                const content = children?.map(processNode).join('') || '';
+                return `<blockquote>${content}</blockquote>`;
+            }
+            
+            // Code block
+            if (type === 'code') {
+                const content = children?.map(processNode).join('') || '';
+                return `<pre><code>${content}</code></pre>`;
+            }
+            
+            // Line break
+            if (type === 'linebreak') {
+                return '<br>';
+            }
+            
+            // Horizontal rule
+            if (type === 'horizontalrule') {
+                return '<hr>';
+            }
+            
+            // Fallback: processar children se existirem
+            if (children && Array.isArray(children)) {
+                return children.map(processNode).join('');
+            }
+            
+            return '';
+        };
+        
+        return (root.children as Record<string, unknown>[]).map(processNode).join('');
+    } catch (error) {
+        console.error('Erro ao processar conteúdo:', error);
+        return '<p>Erro ao carregar conteúdo.</p>';
+    }
+}
+
 export default async function ArticlePage({ params }: ArticlePageProps) {
     const { slug } = await params;
     const post = await getPost(slug);
@@ -98,6 +211,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     const featuredImageAlt = typeof post.featuredImage === 'object' && post.featuredImage !== null && 'alt' in post.featuredImage
         ? post.featuredImage.alt || post.title
         : post.title;
+
+    const contentHtml = lexicalToHtml(post.content);
 
     return (
         <div className="bg-white">
@@ -135,7 +250,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                         <div className="flex flex-wrap items-center gap-6 text-white/90">
                             <div className="flex items-center gap-2">
                                 <User className="w-5 h-5" />
-                                <span>{post.author}</span>
+                                <span>Por {post.author}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Calendar className="w-5 h-5" />
@@ -156,9 +271,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                         </p>
                     </div>
 
-                    <RichText 
-                        data={post.content}
+                    <div 
                         className="prose prose-lg max-w-none prose-headings:text-[#0D1B2A] prose-p:text-gray-700 prose-a:text-[#C7A25B] prose-strong:text-[#0D1B2A] prose-ul:text-gray-700 prose-ol:text-gray-700 prose-li:text-gray-700 prose-blockquote:border-l-[#C7A25B] prose-blockquote:text-gray-600"
+                        dangerouslySetInnerHTML={{ __html: contentHtml }}
                     />
 
                     <div className="mt-12 pt-8 border-t border-gray-200">
@@ -169,7 +284,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                             </div>
                             <div className="flex gap-3">
                                 <a
-                                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+                                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://seusite.com/artigos/${post.slug}`)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"
@@ -177,7 +292,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                                     LinkedIn
                                 </a>
                                 <a
-                                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&text=${encodeURIComponent(post.title)}`}
+                                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://seusite.com/artigos/${post.slug}`)}&text=${encodeURIComponent(post.title)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"
@@ -185,7 +300,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                                     Twitter
                                 </a>
                                 <a
-                                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+                                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://seusite.com/artigos/${post.slug}`)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"
@@ -212,34 +327,55 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                         </div>
 
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {relatedPosts.map((relatedPost) => (
-                                <Link
-                                    key={relatedPost.id}
-                                    href={`/artigos/${relatedPost.slug}`}
-                                    className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
-                                >
-                                    <div className="relative h-48 overflow-hidden">
-                                        <Image
-                                            src={typeof relatedPost.featuredImage === 'object' && relatedPost.featuredImage?.url || '/placeholder.jpg'}
-                                            alt={relatedPost.title}
-                                            fill
-                                            className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        />
-                                    </div>
-                                    <div className="p-6">
-                                        <span className="text-xs font-semibold text-[#C7A25B] uppercase tracking-wide">
-                                            {relatedPost.category}
-                                        </span>
-                                        <h3 className="text-lg font-bold text-[#0D1B2A] mt-2 mb-2 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
-                                            {relatedPost.title}
-                                        </h3>
-                                        <p className="text-sm text-gray-600 line-clamp-2">
-                                            {relatedPost.excerpt}
-                                        </p>
-                                    </div>
-                                </Link>
-                            ))}
+                            {relatedPosts.map((relatedPost) => {
+                                const relatedImageUrl = typeof relatedPost.featuredImage === 'object' && relatedPost.featuredImage !== null && 'url' in relatedPost.featuredImage
+                                    ? relatedPost.featuredImage.url || '/placeholder.jpg'
+                                    : '/placeholder.jpg';
+
+                                return (
+                                    <Link
+                                        key={relatedPost.id}
+                                        href={`/artigos/${relatedPost.slug}`}
+                                        className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+                                    >
+                                        <div className="relative h-48 overflow-hidden">
+                                            <Image
+                                                src={relatedImageUrl}
+                                                alt={relatedPost.title}
+                                                fill
+                                                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            />
+                                            <div className="absolute top-4 left-4">
+                                                <span className="px-3 py-1 bg-[#C7A25B] text-white text-xs font-semibold rounded-full">
+                                                    {relatedPost.category}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="p-6">
+                                            <h3 className="text-lg font-bold text-[#0D1B2A] mb-2 group-hover:text-[#C7A25B] transition-colors line-clamp-2">
+                                                {relatedPost.title}
+                                            </h3>
+                                            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                                                {relatedPost.excerpt}
+                                            </p>
+                                            <div className="flex items-center justify-between text-xs text-gray-500 mb-4 pb-4 border-b border-gray-100">
+                                                <div className="flex items-center gap-2">
+                                                    <Calendar className="w-4 h-4" />
+                                                    <span>{new Date(relatedPost.publishedAt).toLocaleDateString('pt-BR')}</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm font-medium text-gray-700">Por {relatedPost.author}</span>
+                                                <div className="flex items-center gap-2 text-[#C7A25B] group-hover:gap-3 transition-all duration-300">
+                                                    <span className="text-sm font-medium">Leia mais</span>
+                                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
                         </div>
 
                         <div className="text-center mt-12">
